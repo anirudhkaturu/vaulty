@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import { Zap, FileText, LayoutGrid, ShieldCheck } from "lucide-react";
 import { FeatureCard } from "@/components/landing/feature-card";
 
@@ -29,31 +28,27 @@ const features = [
 export const Features = () => (
   <section
     id="solution"
-    className="px-6 py-28 max-w-7xl mx-auto text-center overflow-visible"
+    /* Reduced py-28 to pt-24 pb-12 to remove the bottom void */
+    className="px-6 pt-24 pb-12 max-w-7xl mx-auto text-center overflow-visible"
   >
-    <div className="mb-20">
-      <h2 className="text-4xl font-black text-indigo-950 mb-4">
-        Everything you need.
+    <div className="mb-16">
+      <h2 className="text-4xl md:text-5xl font-black text-indigo-950 mb-4 tracking-tight">
+        Everything you need, <br />
+        <span className="text-indigo-600 font-serif italic font-light">
+          nothing you don&rsquo;t.
+        </span>
       </h2>
-      <p className="text-indigo-600 font-black uppercase text-xs tracking-widest">
+      <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em]">
         Efficiency over bloat
       </p>
     </div>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 perspective-[1500px]">
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 perspective-[1500px]">
       {features.map((f, i) => (
         <FeatureCard key={i} index={i} {...f} />
       ))}
     </div>
-    <motion.div
-      initial={{ opacity: 0, rotateX: 90 }}
-      whileInView={{ opacity: 1, rotateX: 0 }}
-      viewport={{ once: true }}
-      style={{ transformOrigin: "bottom" }}
-      transition={{ type: "spring", damping: 15, stiffness: 100, delay: 0.4 }}
-    >
-      <button className="h-16 px-14 bg-indigo-600 text-white rounded-2xl font-black text-lg hover:shadow-2xl active:scale-95 transition-all">
-        Start your free trial
-      </button>
-    </motion.div>
+
+    {/* Empty motion.div and extra mb-20 removed to snap the next section closer */}
   </section>
 );
