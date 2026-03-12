@@ -10,12 +10,11 @@ import {
 
 export const BentoGrid = () => {
   return (
-    // Changed: Removed auto-rows to allow natural expansion on mobile
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
       {/* 1. THE "DASHBOARD" CARD */}
       <motion.div
         whileHover={{ y: -5 }}
-        className="md:col-span-8 md:row-span-1 min-h-80 bg-indigo-600 rounded-[2.5rem] p-8 md:p-12 overflow-hidden relative group border border-indigo-500 shadow-2xl shadow-indigo-200"
+        className="md:col-span-8 md:row-span-1 min-h-80 bg-indigo-600 rounded-4xl md:rounded-[2.5rem] p-8 md:p-12 overflow-hidden relative group border border-indigo-500 shadow-2xl shadow-indigo-200/50"
       >
         <div className="relative z-10 max-w-xs text-left">
           <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 text-white">
@@ -30,7 +29,7 @@ export const BentoGrid = () => {
           </p>
         </div>
 
-        {/* Visual Mockup: Hidden on mobile to save space, visible on LG */}
+        {/* Visual Mockup: Hidden on mobile, visible on LG for desktop richness */}
         <div className="absolute right-[-5%] bottom-[-5%] w-95 bg-white rounded-3xl shadow-2xl p-6 -rotate-3 group-hover:rotate-0 transition-all duration-500 hidden lg:block border border-slate-100">
           <div className="flex items-center justify-between mb-6 border-b border-slate-50 pb-4">
             <span className="font-bold text-slate-800 text-sm italic font-serif underline decoration-indigo-200">
@@ -72,7 +71,7 @@ export const BentoGrid = () => {
       {/* 2. AUTO REMINDERS */}
       <motion.div
         whileHover={{ y: -5 }}
-        className="md:col-span-4 min-h-75 bg-white border border-slate-200 rounded-[2.5rem] p-8 flex flex-col justify-between group shadow-sm hover:shadow-xl transition-all text-left"
+        className="md:col-span-4 min-h-75 bg-white border border-slate-200 rounded-4xl md:rounded-[2.5rem] p-8 flex flex-col justify-between group shadow-sm hover:shadow-xl transition-all text-left"
       >
         <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center border border-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
           <Zap size={24} />
@@ -91,7 +90,7 @@ export const BentoGrid = () => {
       {/* 3. SECURE VAULT */}
       <motion.div
         whileHover={{ y: -5 }}
-        className="md:col-span-4 min-h-75 bg-slate-950 rounded-[2.5rem] p-8 flex flex-col justify-between group overflow-hidden relative"
+        className="md:col-span-4 min-h-75 bg-slate-950 rounded-4xl md:rounded-[2.5rem] p-8 flex flex-col justify-between group overflow-hidden relative"
       >
         <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white border border-white/10 z-10">
           <ShieldCheck size={24} />
@@ -103,13 +102,17 @@ export const BentoGrid = () => {
             Aadhaar cards.
           </p>
         </div>
-        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#4f46e5_0.5px,transparent_0.5px)] bg-size-[12px_12px]" />
+        {/* Fix: background-size was using bg-size class which is not standard in some versions */}
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#4f46e5_0.5px,transparent_0.5px)]"
+          style={{ backgroundSize: "12px 12px" }}
+        />
       </motion.div>
 
-      {/* 4. AUDIT TRAIL - Fixed for Mobile */}
+      {/* 4. AUDIT TRAIL */}
       <motion.div
         whileHover={{ y: -5 }}
-        className="md:col-span-8 min-h-80 bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-10 flex flex-col md:flex-row items-stretch md:items-center gap-6 md:gap-10 group shadow-sm hover:shadow-xl transition-all text-left"
+        className="md:col-span-8 min-h-80 bg-white border border-slate-200 rounded-4xl md:rounded-[2.5rem] p-8 md:p-10 flex flex-col md:flex-row items-stretch md:items-center gap-8 md:gap-10 group shadow-sm hover:shadow-xl transition-all text-left"
       >
         <div className="flex-1">
           <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 border border-indigo-100">
@@ -124,18 +127,16 @@ export const BentoGrid = () => {
           </p>
         </div>
 
-        {/* Changed: Adjusted padding and width to prevent overflow on small screens */}
-        <div className="flex-1 bg-slate-50 rounded-3xl p-5 md:p-6 border border-slate-100 w-full overflow-hidden">
+        <div className="flex-1 bg-slate-50 rounded-3xl p-5 md:p-6 border border-slate-100 w-full">
           <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
             Optimized For
           </div>
-          {/* Changed: grid-cols-1 for very small screens, 2 for anything above 400px */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {["Accounting", "Legal", "Immigration", "Loan Agents"].map(
               (tag) => (
                 <div
                   key={tag}
-                  className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-600 flex items-center gap-2"
+                  className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-600 flex items-center gap-2 shadow-sm"
                 >
                   <div className="w-1 h-1 rounded-full bg-indigo-400" />
                   {tag}
