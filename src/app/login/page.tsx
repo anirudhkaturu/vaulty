@@ -11,10 +11,10 @@ export default function LoginPage() {
           className="group flex items-center gap-2.5 transition-opacity hover:opacity-90"
         >
           <div className="grid grid-cols-2 gap-0.5 rounded-lg bg-indigo-600 p-1.5 shadow-sm">
-            <span className="h-2 w-2 rounded-[2px] bg-white/40" />
-            <span className="h-2 w-2 rounded-[2px] bg-white" />
-            <span className="h-2 w-2 rounded-[2px] bg-white" />
-            <span className="h-2 w-2 rounded-[2px] bg-white/40" />
+            <span className="h-2 w-2 rounded-xs bg-white/40" />
+            <span className="h-2 w-2 rounded-xs bg-white" />
+            <span className="h-2 w-2 rounded-xs bg-white" />
+            <span className="h-2 w-2 rounded-xs bg-white/40" />
           </div>
           <span className="font-serif text-xl italic tracking-tight text-indigo-950">
             Vaulty
@@ -30,7 +30,7 @@ export default function LoginPage() {
 
       {/* Main Content Area - Centered Vertically */}
       <main className="flex-1 flex items-center justify-center">
-        <div className="mx-auto w-full max-w-[1100px] px-6 py-10">
+        <div className="mx-auto w-full max-w-275 px-6 py-10">
           <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
             {/* Left Side: Content */}
             <div className="flex flex-col justify-center">
