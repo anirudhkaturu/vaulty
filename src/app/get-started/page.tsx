@@ -1,67 +1,105 @@
 import Link from "next/link";
-
 import { LoginForm } from "../login/LoginForm";
 
 export default function GetStartedPage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto max-w-7xl px-4 md:px-6 py-10 md:py-14">
-        <div className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 font-bold text-lg text-indigo-950"
-          >
-            <span className="grid grid-cols-2 gap-0.5 p-1 bg-indigo-600 rounded-md shadow-sm shadow-indigo-200">
-              <span className="w-2 h-2 bg-white/40 rounded-sm" />
-              <span className="w-2 h-2 bg-white rounded-sm" />
-              <span className="w-2 h-2 bg-white rounded-sm" />
-              <span className="w-2 h-2 bg-white/40 rounded-sm" />
-            </span>
-            <span className="tracking-tight italic font-serif">Vaulty</span>
-          </Link>
-          <Link
-            href="/login"
-            className="text-[13px] font-bold text-slate-600 hover:text-indigo-600"
-          >
-            Already have an account?
-          </Link>
-        </div>
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-indigo-100 flex flex-col">
+      {/* Navigation Header */}
+      <nav className="mx-auto w-full max-w-7xl flex items-center justify-between px-6 py-8 shrink-0">
+        <Link
+          href="/"
+          className="group flex items-center gap-2.5 transition-opacity hover:opacity-90"
+        >
+          <div className="grid grid-cols-2 gap-0.5 rounded-lg bg-indigo-600 p-1.5 shadow-sm">
+            <span className="h-2 w-2 rounded-[2px] bg-white/40" />
+            <span className="h-2 w-2 rounded-[2px] bg-white" />
+            <span className="h-2 w-2 rounded-[2px] bg-white" />
+            <span className="h-2 w-2 rounded-[2px] bg-white/40" />
+          </div>
+          <span className="font-serif text-xl italic tracking-tight text-indigo-950">
+            Vaulty
+          </span>
+        </Link>
+        <Link
+          href="/login"
+          className="text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
+        >
+          Already have an account?{" "}
+          <span className="text-indigo-600 font-bold ml-1">Sign in</span>
+        </Link>
+      </nav>
 
-        <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          <div className="lg:col-span-6">
-            <div className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-[0.25em] text-emerald-700">
-              Get Started
+      {/* Main Content Area */}
+      <main className="flex-1 flex items-center justify-center">
+        <div className="mx-auto w-full max-w-[1100px] px-6 py-10">
+          <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
+            {/* Left Side: Content */}
+            <div className="flex flex-col justify-center">
+              <div className="inline-flex w-fit items-center rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600 ring-1 ring-inset ring-indigo-200/50">
+                Workspace Setup
+              </div>
+              <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-indigo-950 md:text-5xl lg:text-6xl">
+                Spin up your <br />
+                <span className="text-slate-400">client portal.</span>
+              </h1>
+              <p className="mt-6 text-base leading-relaxed text-slate-500 max-w-sm">
+                Create a Vaulty workspace in under a minute. Secure, automated,
+                and designed for high-stakes document collection.
+              </p>
+
+              {/* Refined Feature List */}
+              <div className="mt-10 space-y-5">
+                {[
+                  "Unlimited client portals on the free tier",
+                  "Secure uploads with Supabase Auth",
+                  "No credit card required to start",
+                ].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                      <svg
+                        className="h-3 w-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-600">
+                      {feature}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h2 className="mt-4 text-4xl md:text-5xl font-black tracking-tight text-indigo-950 leading-[1.05]">
-              Spin up your client document portal.
-            </h2>
-            <p className="mt-4 text-sm md:text-base font-semibold text-slate-600 max-w-prose">
-              Create a Vaulty workspace in under a minute. Start with email and add
-              Google sign-in when you&apos;re ready.
-            </p>
 
-            <div className="mt-8 grid gap-3 text-[13px] font-semibold text-slate-600">
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Unlimited client portals on the free tier
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Secure uploads with Supabase Auth
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Cancel any time, no card required
+            {/* Right Side: The Form */}
+            <div className="relative flex flex-col items-center lg:items-end">
+              {/* Background Decoration */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[120%] w-[120%] rounded-full bg-indigo-50/40 blur-3xl -z-10" />
+
+              <div className="w-full max-w-sm">
+                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(79,70,229,0.1)]">
+                  {/* Passing initialMode="sign_up" and hiding the toggle to keep them focused on signing up */}
+                  <LoginForm initialMode="sign_up" showModeToggle={false} />
+                </div>
+                <p className="mt-6 text-center text-[11px] font-medium text-slate-400">
+                  By joining, you agree to our{" "}
+                  <span className="underline decoration-slate-200 cursor-pointer hover:text-slate-600 transition-colors">
+                    Terms of Service
+                  </span>
+                  .
+                </p>
               </div>
             </div>
           </div>
-
-          <div className="lg:col-span-6 flex justify-center lg:justify-end">
-            <LoginForm initialMode="sign_up" showModeToggle={false} />
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
-
