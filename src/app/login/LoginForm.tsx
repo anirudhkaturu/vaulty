@@ -66,14 +66,14 @@ export function LoginForm({
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-md mx-auto">
       {/* 1. Conditional Header: Tabs or Static Title */}
       {showModeToggle ? (
         <div className="flex border-b border-slate-100">
           <button
             type="button"
             onClick={() => setMode("sign_in")}
-            className={`flex-1 py-4 text-sm font-bold transition-all ${
+            className={`flex-1 py-5 text-sm font-bold transition-all ${
               isLogin
                 ? "text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30"
                 : "text-slate-400 hover:text-slate-600"
@@ -84,7 +84,7 @@ export function LoginForm({
           <button
             type="button"
             onClick={() => setMode("sign_up")}
-            className={`flex-1 py-4 text-sm font-bold transition-all ${
+            className={`flex-1 py-5 text-sm font-bold transition-all ${
               !isLogin
                 ? "text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30"
                 : "text-slate-400 hover:text-slate-600"
@@ -94,22 +94,22 @@ export function LoginForm({
           </button>
         </div>
       ) : (
-        <div className="border-b border-slate-50 bg-slate-50/30 px-8 py-6">
-          <h2 className="text-sm font-black uppercase tracking-[0.15em] text-indigo-950">
+        <div className="border-b border-slate-50 bg-slate-50/30 px-6 py-6 md:px-8">
+          <h2 className="text-xs md:text-sm font-black uppercase tracking-[0.15em] text-indigo-950">
             {isLogin ? "Sign In" : "Create Account"}
           </h2>
         </div>
       )}
 
-      <div className="p-8 md:p-10">
-        {/* Social Login */}
+      <div className="p-6 md:p-10">
+        {/* Social Login: Height increased for mobile touch target */}
         <button
           type="button"
           onClick={onGoogle}
           disabled={loading}
-          className="group flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 active:scale-[0.98] disabled:opacity-50"
+          className="group flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 active:scale-[0.97] disabled:opacity-50"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24">
+          <svg className="h-5 w-5" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -127,10 +127,10 @@ export function LoginForm({
               fill="#EA4335"
             />
           </svg>
-          Continue with Google
+          <span className="truncate">Continue with Google</span>
         </button>
 
-        <div className="relative my-8 text-center">
+        <div className="relative my-10 text-center">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-100"></div>
           </div>
@@ -139,8 +139,8 @@ export function LoginForm({
           </span>
         </div>
 
-        <form onSubmit={onEmailSubmit} className="space-y-5">
-          <div className="space-y-1.5">
+        <form onSubmit={onEmailSubmit} className="space-y-6">
+          <div className="space-y-2">
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 ml-1">
               Email
             </label>
@@ -150,13 +150,13 @@ export function LoginForm({
               type="email"
               required
               autoComplete="email"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-medium outline-none transition-all focus:bg-white focus:ring-4 focus:ring-indigo-100/50 focus:border-indigo-400"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-4 text-base md:text-sm font-medium outline-none transition-all focus:bg-white focus:ring-4 focus:ring-indigo-100/50 focus:border-indigo-400"
               placeholder="name@company.com"
               disabled={loading}
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <div className="flex justify-between items-center px-1">
               <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                 Password
@@ -164,7 +164,7 @@ export function LoginForm({
               {isLogin && (
                 <button
                   type="button"
-                  className="text-[10px] font-bold text-indigo-600 hover:underline"
+                  className="text-[10px] font-bold text-indigo-600 hover:underline px-2 py-1"
                 >
                   Forgot?
                 </button>
@@ -176,14 +176,14 @@ export function LoginForm({
               type="password"
               required
               autoComplete={isLogin ? "current-password" : "new-password"}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-medium outline-none transition-all focus:bg-white focus:ring-4 focus:ring-indigo-100/50 focus:border-indigo-400"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-4 text-base md:text-sm font-medium outline-none transition-all focus:bg-white focus:ring-4 focus:ring-indigo-100/50 focus:border-indigo-400"
               placeholder="••••••••"
               disabled={loading}
             />
           </div>
 
           {message && (
-            <div className="rounded-xl bg-indigo-50 px-4 py-3 text-[12px] font-bold text-indigo-700 ring-1 ring-indigo-100">
+            <div className="rounded-2xl bg-indigo-50 px-4 py-4 text-[12px] font-bold text-indigo-700 ring-1 ring-indigo-100">
               {message}
             </div>
           )}
@@ -191,7 +191,7 @@ export function LoginForm({
           <button
             type="submit"
             disabled={loading}
-            className={`w-full rounded-2xl py-4 text-sm font-bold text-white shadow-lg transition-all active:scale-[0.98] disabled:opacity-70 ${
+            className={`w-full rounded-2xl py-4.5 md:py-4 text-sm md:text-base font-bold text-white shadow-lg transition-all active:scale-[0.97] disabled:opacity-70 ${
               isLogin
                 ? "bg-indigo-600 shadow-indigo-200 hover:bg-indigo-700"
                 : "bg-slate-900 shadow-slate-200 hover:bg-black"
@@ -201,14 +201,13 @@ export function LoginForm({
           </button>
         </form>
 
-        {/* 2. Redirection Link: Shown only when tabs are hidden on the login page */}
         {!showModeToggle && isLogin && (
-          <div className="mt-8 border-t border-slate-100 pt-6 text-center">
+          <div className="mt-10 border-t border-slate-100 pt-8 text-center">
             <p className="text-xs font-medium text-slate-500">
               New to Vaulty?{" "}
               <Link
                 href="/get-started"
-                className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+                className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors inline-block py-1"
               >
                 Create an account
               </Link>

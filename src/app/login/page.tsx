@@ -5,7 +5,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-indigo-100 flex flex-col">
       {/* Navigation Header */}
-      <nav className="mx-auto w-full max-w-7xl flex items-center justify-between px-6 py-8 shrink-0">
+      <nav className="mx-auto w-full max-w-7xl flex items-center justify-between px-6 py-6 md:py-8 shrink-0">
         <Link
           href="/"
           className="group flex items-center gap-2.5 transition-opacity hover:opacity-90"
@@ -22,31 +22,35 @@ export default function LoginPage() {
         </Link>
         <Link
           href="/"
-          className="text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
+          className="text-xs md:text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
         >
           Back to site
         </Link>
       </nav>
 
-      {/* Main Content Area - Centered Vertically */}
+      {/* Main Content Area */}
       <main className="flex-1 flex items-center justify-center">
-        <div className="mx-auto w-full max-w-275 px-6 py-10">
-          <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
+        {/* max-w-6xl is the "Goldilocks" width (approx 1152px) */}
+        <div className="mx-auto w-full max-w-6xl px-6 py-8 md:py-16">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
             {/* Left Side: Content */}
-            <div className="flex flex-col justify-center">
-              <div className="inline-flex w-fit items-center rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600 ring-1 ring-inset ring-indigo-200/50">
+            <div className="flex flex-col justify-center order-2 lg:order-1 lg:pr-6">
+              <div className="hidden lg:inline-flex w-fit items-center rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600 ring-1 ring-inset ring-indigo-200/50">
                 Client Portal
               </div>
-              <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-indigo-950 md:text-5xl lg:text-6xl">
-                Collect documents <br />
+
+              <h1 className="mt-0 lg:mt-6 text-3xl font-extrabold leading-[1.15] tracking-tight text-indigo-950 md:text-5xl lg:text-6xl text-center lg:text-left">
+                Collect documents <br className="hidden sm:block" />
                 <span className="text-slate-400">without the chase.</span>
               </h1>
-              <p className="mt-6 text-base leading-relaxed text-slate-500 max-w-sm">
-                Welcome back. Sign in to your secure vault to manage document
-                requests, track approvals, and keep your client data protected.
+
+              <p className="mt-4 lg:mt-6 text-sm md:text-base leading-relaxed text-slate-500 max-w-sm mx-auto lg:mx-0 text-center lg:text-left">
+                Sign in to your secure vault to manage document requests and
+                keep your client data protected.
               </p>
 
-              <div className="mt-10 space-y-6">
+              {/* Feature items */}
+              <div className="mt-10 space-y-6 hidden sm:block">
                 <div className="flex gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
                     <svg
@@ -67,9 +71,8 @@ export default function LoginPage() {
                     <h4 className="text-sm font-bold text-indigo-950">
                       Bank-grade security
                     </h4>
-                    <p className="text-xs text-slate-500 mt-1 leading-snug">
-                      AES-256 encryption ensures your sensitive files stay
-                      private.
+                    <p className="text-xs text-slate-500 mt-0.5 leading-snug">
+                      AES-256 encryption for private files.
                     </p>
                   </div>
                 </div>
@@ -94,8 +97,8 @@ export default function LoginPage() {
                     <h4 className="text-sm font-bold text-indigo-950">
                       Automated reminders
                     </h4>
-                    <p className="text-xs text-slate-500 mt-1 leading-snug">
-                      We handle the follow-ups so you can focus on the work.
+                    <p className="text-xs text-slate-500 mt-0.5 leading-snug">
+                      We handle follow-ups automatically.
                     </p>
                   </div>
                 </div>
@@ -103,15 +106,15 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side: The Form */}
-            <div className="relative flex flex-col items-center lg:items-end">
-              {/* Soft Ambient Glow */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[120%] w-[120%] rounded-full bg-indigo-50/40 blur-3xl -z-10" />
+            <div className="relative flex flex-col items-center lg:items-end order-1 lg:order-2 lg:pl-10">
+              {/* Glow effect */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full rounded-full bg-indigo-50/60 blur-3xl -z-10 lg:h-[130%] lg:w-[130%]" />
 
               <div className="w-full max-w-sm">
-                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(79,70,229,0.1)]">
+                <div className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white shadow-[0_20px_50px_rgba(79,70,229,0.08)]">
                   <LoginForm />
                 </div>
-                <p className="mt-6 text-center text-[11px] font-medium text-slate-400">
+                <p className="mt-8 text-center text-[10px] md:text-[11px] font-medium text-slate-400 px-4 leading-relaxed">
                   By signing in, you agree to our{" "}
                   <span className="underline decoration-slate-200 cursor-pointer hover:text-slate-600 transition-colors">
                     Terms of Service
