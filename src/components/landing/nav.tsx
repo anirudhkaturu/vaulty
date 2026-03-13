@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export const Nav = () => (
   <nav className="fixed top-0 w-full z-50 border-b border-slate-200/50 bg-white/80 backdrop-blur-xl transition-all">
@@ -42,14 +43,20 @@ export const Nav = () => (
       {/* --- ACTIONS (Optimized for Mobile) --- */}
       <div className="flex items-center gap-1.5 md:gap-3 z-10">
         {/* Login: visible on all but the tiniest phones */}
-        <button className="text-[12px] md:text-[13px] font-bold text-slate-600 px-3 md:px-4 py-2 rounded-lg hover:bg-slate-50 hover:text-indigo-600 transition-all active:scale-95">
+        <Link
+          href="/login"
+          className="text-[12px] md:text-[13px] font-bold text-slate-600 px-3 md:px-4 py-2 rounded-lg hover:bg-slate-50 hover:text-indigo-600 transition-all active:scale-95"
+        >
           Login
-        </button>
+        </Link>
 
         {/* CTA: Responsive padding */}
-        <button className="bg-indigo-600 text-white px-4 md:px-5 py-2 rounded-lg text-[12px] md:text-[13px] font-bold hover:bg-indigo-700 shadow-md shadow-indigo-100 hover:shadow-indigo-200 transition-all active:scale-95 whitespace-nowrap">
+        <Link
+          href="/get-started"
+          className="bg-indigo-600 text-white px-4 md:px-5 py-2 rounded-lg text-[12px] md:text-[13px] font-bold hover:bg-indigo-700 shadow-md shadow-indigo-100 hover:shadow-indigo-200 transition-all active:scale-95 whitespace-nowrap"
+        >
           Start Free
-        </button>
+        </Link>
       </div>
     </div>
   </nav>
