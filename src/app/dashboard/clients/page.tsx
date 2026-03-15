@@ -1,19 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
 import { db } from "@/lib/db";
 import { clients } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
-import { Search, Mail, Phone, MoreVertical, ArrowLeft } from "lucide-react";
+import { Search, Mail, Users, ArrowRight } from "lucide-react";
 import { AddClientForm } from "./AddClientForm";
+import { ClientRowActions } from "./ClientRowActions";
+import Link from "next/link";
 
 export default async function ClientsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/login");
-  }
+  if (!user) return null;
 
   const allClients = await db.query.clients.findMany({
     where: eq(clients.profileId, user.id),
@@ -21,121 +19,89 @@ export default async function ClientsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <nav className="bg-white border-b border-slate-200 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link 
-              href="/dashboard"
-              className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-indigo-600"
-              title="Back to Dashboard"
-            >
-              <ArrowLeft size={20} />
-            </Link>
-            <div className="h-6 w-px bg-slate-200" />
-            <Link href="/dashboard" className="flex items-center gap-2.5">
-              <div className="grid grid-cols-2 gap-0.5 rounded-lg bg-indigo-600 p-1.5 shadow-sm">
-                <span className="h-2 w-2 rounded-xs bg-white/40" />
-                <span className="h-2 w-2 rounded-xs bg-white" />
-                <span className="h-2 w-2 rounded-xs bg-white" />
-                <span className="h-2 w-2 rounded-xs bg-white/40" />
-              </div>
-              <span className="font-serif text-xl italic tracking-tight text-indigo-950">
-                Vaulty
-              </span>
-            </Link>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      {/* Tightened Header */}
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-100 text-[9px] font-black text-indigo-600 mb-2 uppercase tracking-[0.2em]">
+            <Users size={10} strokeWidth={3} />
+            <span>Directory</span>
           </div>
-          <div className="flex items-center gap-4">
-            <form action="/auth/signout" method="post">
-              <button
-                type="submit"
-                className="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors"
-              >
-                Sign out
-              </button>
-            </form>
-          </div>
+          <h1 className="text-3xl font-black text-indigo-950 tracking-tight leading-none">
+            Clients
+          </h1>
         </div>
-      </nav>
+        <AddClientForm />
+      </header>
 
-      <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-8">
-        <header className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-black text-indigo-950 tracking-tight">
-              Clients
-            </h1>
-            <p className="text-slate-500 font-medium">
-              Manage your client relationships and document history.
+      {/* Compact Action Bar */}
+      <div className="flex flex-col md:flex-row gap-3">
+        <div className="relative flex-1 group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={16} />
+          <input 
+            type="text" 
+            placeholder="Quick search..."
+            className="w-full bg-white border border-slate-200/60 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-200 transition-all shadow-sm"
+          />
+        </div>
+      </div>
+
+      {/* Tightened Clients List - Removed overflow-hidden to allow menus to pop */}
+      <div className="bg-white border border-slate-200/60 rounded-3xl shadow-sm overflow-visible">
+        {allClients.length === 0 ? (
+          <div className="py-20 text-center flex flex-col items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-200 mb-4">
+              <Users size={28} />
+            </div>
+            <h3 className="text-lg font-black text-indigo-950 mb-1">No clients yet.</h3>
+            <p className="text-slate-400 font-medium text-sm max-w-xs mx-auto mb-6">
+              Your directory is empty.
             </p>
           </div>
-          <AddClientForm />
-        </header>
+        ) : (
+          <div className="divide-y divide-slate-100/60">
+            {allClients.map((client, index) => (
+              <div 
+                key={client.id} 
+                className={`group relative flex items-center pr-4 hover:bg-slate-50/50 transition-all ${
+                  index === 0 ? "rounded-t-3xl" : ""
+                } ${
+                  index === allClients.length - 1 ? "rounded-b-3xl" : ""
+                }`}
+              >
+                <Link 
+                  href={`/dashboard/clients/${client.id}`}
+                  className="px-5 py-4 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-sm group-hover:scale-105 transition-transform duration-300 shadow-xs group-hover:bg-white border border-transparent group-hover:border-indigo-100">
+                      {client.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight">
+                        {client.name}
+                      </h4>
+                      <div className="flex items-center gap-3 mt-0.5">
+                        <span className="flex items-center gap-1 text-[11px] text-slate-400 font-bold uppercase tracking-wide">
+                          {client.email || "No email"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-        {/* Search and Filters */}
-        <div className="mb-8 flex gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search clients by name or email..."
-              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-200 transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Clients List */}
-        <div className="bg-white border border-slate-200 rounded-4xl overflow-hidden shadow-sm">
-          {allClients.length === 0 ? (
-            <div className="py-24 text-center">
-              <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Search size={24} className="text-slate-300" />
+                  <div className="hidden md:flex flex-col items-end">
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                      Active
+                    </span>
+                  </div>
+                </Link>
+                
+                <ClientRowActions clientId={client.id} />
               </div>
-              <h3 className="text-indigo-950 font-bold">No clients found</h3>
-              <p className="text-slate-400 text-sm mt-1">Start by adding your first client to your vault.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {allClients.map((client) => (
-                <div key={client.id} className="group relative">
-                  <Link 
-                    href={`/dashboard/clients/${client.id}`}
-                    className="p-6 hover:bg-slate-50/50 transition-colors flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg">
-                        {client.name.charAt(0)}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-indigo-950 leading-none mb-1.5">{client.name}</h4>
-                        <div className="flex items-center gap-4 text-xs text-slate-500 font-medium">
-                          <span className="flex items-center gap-1">
-                            <Mail size={12} />
-                            {client.email || "No email"}
-                          </span>
-                          {client.phone && (
-                            <span className="flex items-center gap-1">
-                              <Phone size={12} />
-                              {client.phone}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-xs font-bold text-slate-400 group-hover:text-indigo-600 px-3 py-1.5 rounded-lg group-hover:bg-indigo-50 transition-all">
-                        View Profile
-                      </span>
-                      <div className="text-slate-400 hover:text-indigo-950 p-1">
-                        <MoreVertical size={18} />
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

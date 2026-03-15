@@ -11,9 +11,10 @@ import {
   Calendar, 
   FileText, 
   Plus,
-  Clock
+  Clock,
+  ExternalLink
 } from "lucide-react";
-import { DeleteClientButton } from "./DeleteClientButton";
+import { ClientRowActions } from "../ClientRowActions";
 
 export default async function ClientDetailPage({
   params,
@@ -47,147 +48,145 @@ export default async function ClientDetailPage({
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <nav className="bg-white border-b border-slate-200 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link 
-              href="/dashboard/clients"
-              className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-indigo-600"
-            >
-              <ArrowLeft size={20} />
-            </Link>
-            <div className="h-6 w-px bg-slate-200" />
-            <span className="font-bold text-indigo-950">{client.name}</span>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      {/* Tightened Header */}
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link 
+            href="/dashboard/clients"
+            className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-xs group"
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-black text-indigo-950 tracking-tight leading-none">
+              {client.name}
+            </h1>
+            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1.5 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Active Client
+            </p>
           </div>
-          <form action="/auth/signout" method="post">
-            <button
-              type="submit"
-              className="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors"
-            >
-              Sign out
-            </button>
-          </form>
         </div>
-      </nav>
+        <div className="flex items-center gap-2">
+          <button className="h-9 px-4 bg-white border border-slate-200 rounded-xl font-bold text-[11px] text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-xs uppercase tracking-wider">
+            Edit Details
+          </button>
+          <button className="h-9 px-4 bg-indigo-600 text-white rounded-xl font-bold text-[11px] hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm uppercase tracking-wider">
+            <Plus size={14} strokeWidth={3} />
+            New Request
+          </button>
+          <div className="ml-1 pl-1 border-l border-slate-200">
+            <ClientRowActions clientId={id} />
+          </div>
+        </div>
+      </header>
 
-      <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Client Info */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white border border-slate-200 rounded-4xl p-8 shadow-sm">
-              <div className="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-3xl mb-6">
-                {client.name.charAt(0)}
-              </div>
-              <h1 className="text-2xl font-black text-indigo-950 mb-1">{client.name}</h1>
-              <p className="text-slate-500 text-sm font-medium mb-8">Client since {client.createdAt.toLocaleDateString()}</p>
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 text-slate-600">
-                  <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0">
-                    <Mail size={18} className="text-slate-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Email</p>
-                    <p className="text-sm font-bold truncate">{client.email || "No email"}</p>
-                  </div>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Left Column: Compact Info Card */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm">
+            <div className="space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
+                  <Mail size={14} className="text-slate-400" />
                 </div>
-
-                <div className="flex items-center gap-3 text-slate-600">
-                  <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0">
-                    <Phone size={18} className="text-slate-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Phone</p>
-                    <p className="text-sm font-bold truncate">{client.phone || "No phone"}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 text-slate-600">
-                  <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0">
-                    <Calendar size={18} className="text-slate-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Added</p>
-                    <p className="text-sm font-bold">{client.createdAt.toLocaleDateString()}</p>
-                  </div>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-black uppercase tracking-wider text-slate-300 mb-0.5">Email</p>
+                  <p className="text-xs font-bold text-indigo-950 truncate">{client.email || "—"}</p>
                 </div>
               </div>
 
-              {client.notes && (
-                <div className="mt-8 pt-8 border-t border-slate-100">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Private Notes</p>
-                  <div className="bg-slate-50 rounded-2xl p-4 text-sm text-slate-600 font-medium leading-relaxed">
-                    {client.notes}
-                  </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
+                  <Phone size={14} className="text-slate-400" />
                 </div>
-              )}
+                <div className="min-w-0">
+                  <p className="text-[9px] font-black uppercase tracking-wider text-slate-300 mb-0.5">Phone</p>
+                  <p className="text-xs font-bold text-indigo-950 truncate">{client.phone || "—"}</p>
+                </div>
+              </div>
 
-              <div className="mt-8 pt-8 border-t border-slate-100">
-                <DeleteClientButton clientId={id} />
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
+                  <Calendar size={14} className="text-slate-400" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-black uppercase tracking-wider text-slate-300 mb-0.5">Joined</p>
+                  <p className="text-xs font-bold text-indigo-950">{client.createdAt.toLocaleDateString()}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Right Column: Requests */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xl font-black text-indigo-950">Document Requests</h2>
-              <button className="inline-flex items-center gap-2 bg-white border border-slate-200 text-indigo-600 px-4 py-2 rounded-xl font-bold hover:bg-indigo-50 transition-all text-xs">
-                <Plus size={16} strokeWidth={3} />
-                New Request
-              </button>
+            {client.notes && (
+              <div className="mt-6 pt-6 border-t border-slate-100">
+                <p className="text-[9px] font-black uppercase tracking-wider text-slate-300 mb-2">Notes</p>
+                <p className="text-[11px] text-slate-500 font-medium leading-relaxed italic">
+                  &ldquo;{client.notes}&rdquo;
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column: Requests & Timeline */}
+        <div className="lg:col-span-3 space-y-6">
+          <div className="bg-white border border-slate-200/60 rounded-3xl overflow-hidden shadow-sm">
+            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
+              <h2 className="text-xs font-black text-indigo-950 uppercase tracking-widest">Document Requests</h2>
+              <span className="text-[9px] font-black text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md uppercase">
+                {clientRequests.length} Total
+              </span>
             </div>
 
             {clientRequests.length === 0 ? (
-              <div className="bg-white border-2 border-dashed border-slate-200 rounded-4xl py-20 text-center">
-                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <FileText size={24} className="text-slate-300" />
+              <div className="p-12 text-center">
+                <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mx-auto mb-4">
+                  <FileText size={20} className="text-slate-200" />
                 </div>
-                <h3 className="text-indigo-950 font-bold">No requests yet</h3>
-                <p className="text-slate-400 text-sm mt-1">Send a document request to this client to get started.</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No active requests.</p>
+                <button className="mt-4 text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-[0.2em]">
+                  Create Request
+                </button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="divide-y divide-slate-100">
                 {clientRequests.map((request) => (
-                  <div key={request.id} className="bg-white border border-slate-200 rounded-3xl p-6 flex items-center justify-between hover:border-indigo-200 transition-all shadow-sm group">
+                  <div key={request.id} className="p-5 hover:bg-slate-50/50 transition-colors flex items-center justify-between group">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                        <FileText size={20} />
+                      <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-xs">
+                        <FileText size={18} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-indigo-950 leading-none mb-1.5 flex items-center gap-2">
-                          Request #{request.id.slice(0, 8)}
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-widest ${
+                        <h4 className="font-bold text-sm text-indigo-950 leading-tight mb-1">
+                          Request #{request.id.slice(0, 8).toUpperCase()}
+                        </h4>
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-wide">
+                            <Clock size={10} />
+                            {request.createdAt.toLocaleDateString()}
+                          </span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-black uppercase tracking-tighter ${
                             request.status === 'completed' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
                           }`}>
                             {request.status}
                           </span>
-                        </h4>
-                        <div className="flex items-center gap-4 text-xs text-slate-500 font-medium">
-                          <span className="flex items-center gap-1">
-                            <Clock size={12} />
-                            Sent {request.createdAt.toLocaleDateString()}
-                          </span>
-                          {request.dueDate && (
-                            <span className="flex items-center gap-1">
-                              <Calendar size={12} />
-                              Due {request.dueDate.toLocaleDateString()}
-                            </span>
-                          )}
                         </div>
                       </div>
                     </div>
-                    <button className="opacity-0 group-hover:opacity-100 bg-slate-50 text-slate-600 hover:bg-indigo-600 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
-                      Manage Request
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button className="h-8 px-3 rounded-lg bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center text-[10px] font-black uppercase tracking-widest shadow-xs">
+                        Details
+                        <ExternalLink size={10} className="ml-1.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             )}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
