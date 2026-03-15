@@ -7,30 +7,30 @@ import { Loader2, PlusCircle, Check } from "lucide-react";
 export function AddItemForm({ templateId }: { templateId: string }) {
   const [pending, setPending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isRequired, setIsRequired] = useState(true); // default true
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setPending(true);
-    
+
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
-    const isRequired = formData.get("isRequired") === "on";
 
     try {
       await addTemplateItemAction(templateId, name, description, isRequired);
       formRef.current?.reset();
-      
-      // Visual feedback
+      setIsRequired(true); // reset to default
+
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2000);
-      
-      // Refocus the name input for rapid adding
-      const nameInput = formRef.current?.querySelector('input[name="name"]') as HTMLInputElement;
+
+      const nameInput = formRef.current?.querySelector(
+        'input[name="name"]',
+      ) as HTMLInputElement;
       nameInput?.focus();
     } catch (error) {
-      // Silent error or a subtle toast would be better than an alert
       console.error("Failed to add requirement", error);
     } finally {
       setPending(false);
@@ -38,66 +38,84 @@ export function AddItemForm({ templateId }: { templateId: string }) {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
-      <div className="space-y-2">
-        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-          Requirement Name
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-xl bg-white p-5 shadow-sm border border-slate-100 transition-all"
+    >
+      {/* Name field */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-medium text-slate-400 tracking-wide">
+          Name
         </label>
         <input
           name="name"
           required
           autoComplete="off"
           placeholder="e.g. Passport Copy"
-          className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-200 focus:bg-white transition-all"
+          className="w-full border-b border-slate-200 bg-transparent py-2.5 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:border-indigo-400 focus:outline-none focus:ring-0 transition-colors"
         />
       </div>
 
-      <div className="space-y-2">
-        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-          Description (Optional)
+      {/* Description field */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-medium text-slate-400 tracking-wide">
+          Description <span className="text-slate-300">(optional)</span>
         </label>
         <textarea
           name="description"
           rows={2}
           placeholder="Instructions for the client..."
-          className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-200 focus:bg-white transition-all resize-none"
+          className="w-full border-b border-slate-200 bg-transparent py-2.5 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:border-indigo-400 focus:outline-none focus:ring-0 transition-colors resize-none"
         />
       </div>
 
-      <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-        <input
-          type="checkbox"
-          name="isRequired"
-          id="isRequired"
-          defaultChecked
-          className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-        />
-        <label htmlFor="isRequired" className="text-xs font-bold text-slate-600 select-none cursor-pointer">
+      {/* Required toggle – modern switch */}
+      <div className="flex items-center justify-between py-1">
+        <span className="text-xs font-medium text-slate-500">
           Required for completion
-        </label>
+        </span>
+        <button
+          type="button"
+          onClick={() => setIsRequired(!isRequired)}
+          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-1 ${
+            isRequired ? "bg-indigo-500" : "bg-slate-200"
+          }`}
+        >
+          <span
+            className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+              isRequired ? "translate-x-5" : "translate-x-0.5"
+            }`}
+          />
+        </button>
+        <input type="hidden" name="isRequired" value={isRequired ? "on" : ""} />
       </div>
 
+      {/* Submit button */}
       <button
         type="submit"
         disabled={pending}
-        className={`w-full py-3.5 rounded-2xl font-bold transition-all shadow-lg active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-2 text-sm ${
-          showSuccess 
-            ? "bg-emerald-500 text-white shadow-emerald-200" 
-            : "bg-indigo-600 text-white shadow-indigo-200 hover:bg-indigo-700"
-        }`}
+        className="group relative w-full overflow-hidden rounded-lg bg-indigo-50 py-3.5 text-sm font-semibold text-indigo-600 shadow-sm transition-all hover:bg-indigo-100 hover:shadow active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70"
       >
-        {pending ? (
-          <Loader2 className="animate-spin" size={18} />
-        ) : showSuccess ? (
-          <>
-            <Check size={18} strokeWidth={3} />
-            Added!
-          </>
-        ) : (
-          <>
-            <PlusCircle size={18} />
-            Add to Template
-          </>
+        <span className="flex items-center justify-center gap-2">
+          {pending ? (
+            <Loader2 className="animate-spin" size={18} />
+          ) : showSuccess ? (
+            <>
+              <Check size={18} strokeWidth={2.5} />
+              Added
+            </>
+          ) : (
+            <>
+              <PlusCircle size={18} strokeWidth={1.5} />
+              Add to template
+            </>
+          )}
+        </span>
+
+        {/* Animated background on success */}
+        {showSuccess && (
+          <span className="absolute inset-0 z-0 animate-pulse bg-emerald-200/50" />
         )}
       </button>
     </form>
