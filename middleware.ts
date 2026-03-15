@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   // If Supabase isn't configured yet, don't block local dev.
   if (!url || !anonKey) return NextResponse.next();
 
-  let response = NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: request.headers,
     },

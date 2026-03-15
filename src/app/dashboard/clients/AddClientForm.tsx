@@ -15,7 +15,7 @@ export function AddClientForm() {
     try {
       await createClientAction(formData);
       setIsOpen(false);
-    } catch (error) {
+    } catch {
       alert("Failed to add client");
     } finally {
       setPending(false);

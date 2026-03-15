@@ -4,7 +4,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { clients } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
-import { Search, Mail, Phone, MoreVertical } from "lucide-react";
+import { Search, Mail, Phone, MoreVertical, ArrowLeft } from "lucide-react";
 import { AddClientForm } from "./AddClientForm";
 
 export default async function ClientsPage() {
@@ -24,24 +24,28 @@ export default async function ClientsPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <nav className="bg-white border-b border-slate-200 px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="grid grid-cols-2 gap-0.5 rounded-lg bg-indigo-600 p-1.5 shadow-sm">
-              <span className="h-2 w-2 rounded-xs bg-white/40" />
-              <span className="h-2 w-2 rounded-xs bg-white" />
-              <span className="h-2 w-2 rounded-xs bg-white" />
-              <span className="h-2 w-2 rounded-xs bg-white/40" />
-            </div>
-            <span className="font-serif text-xl italic tracking-tight text-indigo-950">
-              Vaulty
-            </span>
-          </Link>
           <div className="flex items-center gap-4">
             <Link 
               href="/dashboard"
-              className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors"
+              className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-indigo-600"
+              title="Back to Dashboard"
             >
-              Dashboard
+              <ArrowLeft size={20} />
             </Link>
+            <div className="h-6 w-px bg-slate-200" />
+            <Link href="/dashboard" className="flex items-center gap-2.5">
+              <div className="grid grid-cols-2 gap-0.5 rounded-lg bg-indigo-600 p-1.5 shadow-sm">
+                <span className="h-2 w-2 rounded-xs bg-white/40" />
+                <span className="h-2 w-2 rounded-xs bg-white" />
+                <span className="h-2 w-2 rounded-xs bg-white" />
+                <span className="h-2 w-2 rounded-xs bg-white/40" />
+              </div>
+              <span className="font-serif text-xl italic tracking-tight text-indigo-950">
+                Vaulty
+              </span>
+            </Link>
+          </div>
+          <div className="flex items-center gap-4">
             <form action="/auth/signout" method="post">
               <button
                 type="submit"
@@ -92,35 +96,40 @@ export default async function ClientsPage() {
           ) : (
             <div className="divide-y divide-slate-100">
               {allClients.map((client) => (
-                <div key={client.id} className="p-6 hover:bg-slate-50/50 transition-colors flex items-center justify-between group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg">
-                      {client.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-indigo-950 leading-none mb-1.5">{client.name}</h4>
-                      <div className="flex items-center gap-4 text-xs text-slate-500 font-medium">
-                        <span className="flex items-center gap-1">
-                          <Mail size={12} />
-                          {client.email || "No email"}
-                        </span>
-                        {client.phone && (
+                <div key={client.id} className="group relative">
+                  <Link 
+                    href={`/dashboard/clients/${client.id}`}
+                    className="p-6 hover:bg-slate-50/50 transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg">
+                        {client.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-indigo-950 leading-none mb-1.5">{client.name}</h4>
+                        <div className="flex items-center gap-4 text-xs text-slate-500 font-medium">
                           <span className="flex items-center gap-1">
-                            <Phone size={12} />
-                            {client.phone}
+                            <Mail size={12} />
+                            {client.email || "No email"}
                           </span>
-                        )}
+                          {client.phone && (
+                            <span className="flex items-center gap-1">
+                              <Phone size={12} />
+                              {client.phone}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="text-xs font-bold text-slate-400 hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-all">
-                      View Profile
-                    </button>
-                    <button className="text-slate-400 hover:text-indigo-950">
-                      <MoreVertical size={18} />
-                    </button>
-                  </div>
+                    <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-xs font-bold text-slate-400 group-hover:text-indigo-600 px-3 py-1.5 rounded-lg group-hover:bg-indigo-50 transition-all">
+                        View Profile
+                      </span>
+                      <div className="text-slate-400 hover:text-indigo-950 p-1">
+                        <MoreVertical size={18} />
+                      </div>
+                    </div>
+                  </Link>
                 </div>
               ))}
             </div>

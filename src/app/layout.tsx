@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     // Added 'scroll-smooth' so your Nav links glide instead of jump
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased bg-[#fafafa] text-slate-900`}
       >
