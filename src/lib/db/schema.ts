@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid, boolean, pgEnum, bigint } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const requestStatusEnum = pgEnum("request_status", ["pending", "in_progress", "completed", "expired"]);
 
@@ -9,6 +9,11 @@ export const profiles = pgTable("profiles", {
   companyName: text("company_name"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const profilesRelations = relations(profiles, ({ many }) => ({
+  clients: many(clients),
+  templates: many(request_templates),
+}));
 
 export const clients = pgTable("clients", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -21,6 +26,14 @@ export const clients = pgTable("clients", {
   notes: text("notes"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const clientsRelations = relations(clients, ({ one, many }) => ({
+  profile: one(profiles, {
+    fields: [clients.profileId],
+    references: [profiles.id],
+  }),
+  requests: many(requests),
+}));
 
 export const request_templates = pgTable("request_templates", {
   id: uuid("id")
@@ -35,6 +48,15 @@ export const request_templates = pgTable("request_templates", {
     .notNull(),
 });
 
+export const requestTemplatesRelations = relations(request_templates, ({ one, many }) => ({
+  profile: one(profiles, {
+    fields: [request_templates.profileId],
+    references: [profiles.id],
+  }),
+  items: many(template_items),
+  requests: many(requests),
+}));
+
 export const template_items = pgTable("template_items", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
   templateId: uuid("template_id")
@@ -45,6 +67,13 @@ export const template_items = pgTable("template_items", {
   isRequired: boolean("is_required").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const templateItemsRelations = relations(template_items, ({ one }) => ({
+  template: one(request_templates, {
+    fields: [template_items.templateId],
+    references: [request_templates.id],
+  }),
+}));
 
 export const requests = pgTable("requests", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -61,6 +90,18 @@ export const requests = pgTable("requests", {
   completedAt: timestamp("completed_at", { withTimezone: true }),
 });
 
+export const requestsRelations = relations(requests, ({ one, many }) => ({
+  client: one(clients, {
+    fields: [requests.clientId],
+    references: [clients.id],
+  }),
+  template: one(request_templates, {
+    fields: [requests.templateId],
+    references: [request_templates.id],
+  }),
+  documents: many(request_documents),
+}));
+
 export const request_documents = pgTable("request_documents", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
   requestId: uuid("request_id")
@@ -71,6 +112,14 @@ export const request_documents = pgTable("request_documents", {
   uploaded: boolean("uploaded").default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const requestDocumentsRelations = relations(request_documents, ({ one, many }) => ({
+  request: one(requests, {
+    fields: [request_documents.requestId],
+    references: [requests.id],
+  }),
+  file: one(documents),
+}));
 
 export const documents = pgTable("documents", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -83,3 +132,10 @@ export const documents = pgTable("documents", {
   contentType: text("content_type"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const documentsRelations = relations(documents, ({ one }) => ({
+  requestDocument: one(request_documents, {
+    fields: [documents.requestDocumentId],
+    references: [request_documents.id],
+  }),
+}));
