@@ -30,7 +30,7 @@ export function ClientRowActions({ clientId }: { clientId: string }) {
     setIsPending(true);
     try {
       await deleteClientAction(clientId);
-    } catch (error) {
+    } catch {
       alert("Failed to delete client");
       setIsPending(false);
     }

@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { db } from "@/lib/db";
 import { clients } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
-import { Search, Mail, Users, ArrowRight } from "lucide-react";
+import { Search, Users} from "lucide-react";
 import { AddClientForm } from "./AddClientForm";
 import { ClientRowActions } from "./ClientRowActions";
 import Link from "next/link";
