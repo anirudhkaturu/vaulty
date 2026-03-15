@@ -39,7 +39,7 @@ export function LoginForm({
         return;
       }
 
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     } catch (err) {
       const text = err instanceof Error ? err.message : "Action failed";
       setMessage(text);

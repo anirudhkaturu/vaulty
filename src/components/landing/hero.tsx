@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   CheckCircle2,
 } from "lucide-react";
+import Link from "next/link";
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -126,13 +127,16 @@ export const Hero = () => (
         variants={itemVariants}
         className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 px-6"
       >
-        <button className="w-full sm:w-auto h-16 px-10 bg-indigo-600 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all group active:scale-95 shadow-xl shadow-indigo-500/20">
+        <Link
+          href="/get-started"
+          className="w-full sm:w-auto h-16 px-10 bg-indigo-600 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all group active:scale-95 shadow-xl shadow-indigo-500/20"
+        >
           Start your vault
           <ArrowRight
             size={20}
             className="group-hover:translate-x-1 transition-transform"
           />
-        </button>
+        </Link>
         <button className="w-full sm:w-auto h-16 px-10 bg-white text-slate-600 border border-slate-200 rounded-2xl font-bold text-lg hover:bg-slate-50 transition-all active:scale-95">
           Watch Demo
         </button>

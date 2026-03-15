@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Check, Sparkles, Shield, Clock, ArrowRight, Info } from "lucide-react";
+import Link from "next/link";
 
 const features = [
   "Up to 25 active document requests",
@@ -133,16 +134,21 @@ export const Pricing = () => (
               ))}
             </div>
 
-            <button className="w-full h-16 bg-indigo-600 text-white rounded-[1.25rem] font-black text-lg hover:bg-indigo-700 hover:-translate-y-0.5 transition-all shadow-xl shadow-indigo-200 active:scale-[0.98] flex items-center justify-center gap-3 group">
+            <Link
+              href="/get-started"
+              className="w-full h-16 bg-indigo-600 text-white rounded-[1.25rem] font-black text-lg hover:bg-indigo-700 hover:-translate-y-0.5 transition-all shadow-xl shadow-indigo-200 active:scale-[0.98] flex items-center justify-center gap-3 group"
+            >
               Claim Beta Access
               <ArrowRight
                 size={20}
                 className="group-hover:translate-x-1 transition-transform"
               />
-            </button>
+            </Link>
 
             <div className="mt-8 flex items-center gap-2 justify-center text-slate-400">
-              <Info size={14} className="shrink-0" />
+              <span className="shrink-0">
+                <Info size={14} />
+              </span>
               <p className="text-[10px] md:text-[11px] font-bold leading-tight">
                 *Price locked at $19/mo for extra seats (60% off).
               </p>

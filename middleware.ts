@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   // If Supabase isn't configured yet, don't block local dev.
   if (!url || !anonKey) return NextResponse.next();
 
-  const response = NextResponse.next({
+  let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
@@ -27,8 +27,20 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // Refreshes the session if needed (e.g. after OAuth redirect).
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const isHome = request.nextUrl.pathname === "/";
+  const isAuthPage = request.nextUrl.pathname.startsWith("/login") || 
+                     request.nextUrl.pathname.startsWith("/get-started");
+  const isDashboardPage = request.nextUrl.pathname.startsWith("/dashboard");
+
+  if (user && (isAuthPage || isHome)) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (!user && isDashboardPage) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
   return response;
 }
@@ -38,4 +50,5 @@ export const config = {
     "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)",
   ],
 };
+
 
