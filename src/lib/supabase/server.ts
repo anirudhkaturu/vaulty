@@ -19,10 +19,22 @@ export async function createClient() {
         return cookieStore.get(name)?.value;
       },
       set(name: string, value: string, options?: Parameters<typeof cookieStore.set>[2]) {
-        cookieStore.set(name, value, options);
+        try {
+          cookieStore.set(name, value, options);
+        } catch (error) {
+          // The `set` method was called from a Server Component.
+          // This can be ignored if you have middleware refreshing
+          // user sessions.
+        }
       },
       remove(name: string, options?: Parameters<typeof cookieStore.set>[2]) {
-        cookieStore.set(name, "", options);
+        try {
+          cookieStore.set(name, "", options);
+        } catch (error) {
+          // The `remove` method was called from a Server Component.
+          // This can be ignored if you have middleware refreshing
+          // user sessions.
+        }
       },
     },
   });
