@@ -1,9 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { db } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 import { DashboardSidebar } from "./DashboardSidebar";
 
 export default async function DashboardLayout({
@@ -18,19 +15,10 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const profile = await db.query.profiles.findFirst({
-    where: eq(profiles.id, user.id),
-  });
-
-  const displayName = profile?.name || user.email?.split("@")[0] || "User";
-
   return (
     <div className="min-h-screen bg-[#fafafa] flex">
       {/* Sidebar - Client Component */}
-      <DashboardSidebar 
-        displayName={displayName} 
-        companyName={profile?.companyName} 
-      />
+      <DashboardSidebar />
 
       {/* Main Content */}
       <main className="flex-1 min-h-screen relative">
