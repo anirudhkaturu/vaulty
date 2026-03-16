@@ -17,7 +17,7 @@ export function DeleteItemButton({
     setIsPending(true);
     try {
       await deleteTemplateItemAction(templateId, itemId);
-    } catch (error) {
+    } catch {
       alert("Failed to delete item");
       setIsPending(false);
     }

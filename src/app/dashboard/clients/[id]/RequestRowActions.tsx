@@ -1,25 +1,21 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { MoreVertical, Edit2, Trash2, Loader2, Send } from "lucide-react";
-import { deleteClientAction } from "./actions";
-import { SendRequestModal } from "./SendRequestModal";
+import { MoreVertical, Trash2, Loader2, Eye } from "lucide-react";
+import { deleteRequestAction } from "../actions";
+import Link from "next/link";
 
-interface Template {
-  id: string;
-  name: string;
-}
-
-export function ClientRowActions({ 
+export function RequestRowActions({ 
+  requestId, 
   clientId, 
-  templates 
+  templateId 
 }: { 
-  clientId: string; 
-  templates: Template[];
+  requestId: string; 
+  clientId: string;
+  templateId: string | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,13 +34,13 @@ export function ClientRowActions({
     e.preventDefault();
     e.stopPropagation();
     
-    if (!confirm("Are you sure you want to delete this client?")) return;
+    if (!confirm("Are you sure you want to delete this request?")) return;
 
     setIsDeleting(true);
     try {
-      await deleteClientAction(clientId);
+      await deleteRequestAction(requestId, clientId);
     } catch {
-      alert("Failed to delete client");
+      alert("Failed to delete request");
       setIsDeleting(false);
     }
   }
@@ -64,30 +60,16 @@ export function ClientRowActions({
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl z-30 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsRequestModalOpen(true);
-              setIsOpen(false);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-indigo-600 hover:bg-indigo-50 transition-colors text-left border-b border-slate-50 uppercase tracking-widest"
-          >
-            <Send size={14} className="text-indigo-500" />
-            Send Request
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              // Edit logic would go here
-              setIsOpen(false);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors text-left border-b border-slate-50"
-          >
-            <Edit2 size={14} className="text-slate-400" />
-            Edit Client
-          </button>
+          {templateId && (
+            <Link
+              href={`/dashboard/templates/${templateId}`}
+              className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors border-b border-slate-50"
+            >
+              <Eye size={14} className="text-slate-400" />
+              Check Template
+            </Link>
+          )}
+
           <button
             disabled={isDeleting}
             onClick={handleDelete}
@@ -98,17 +80,9 @@ export function ClientRowActions({
             ) : (
               <Trash2 size={14} />
             )}
-            Delete Client
+            Delete Request
           </button>
         </div>
-      )}
-
-      {isRequestModalOpen && (
-        <SendRequestModal 
-          clientId={clientId} 
-          templates={templates} 
-          onClose={() => setIsRequestModalOpen(false)} 
-        />
       )}
     </div>
   );

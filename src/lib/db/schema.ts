@@ -113,7 +113,7 @@ export const request_documents = pgTable("request_documents", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
-export const requestDocumentsRelations = relations(request_documents, ({ one, many }) => ({
+export const requestDocumentsRelations = relations(request_documents, ({ one }) => ({
   request: one(requests, {
     fields: [request_documents.requestId],
     references: [requests.id],

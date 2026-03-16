@@ -60,50 +60,57 @@ export function DeleteTemplateButton({ templateId }: { templateId: string }) {
 
       {showModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
           aria-modal="true"
           role="dialog"
         >
-          {/* Glass Blur Overlay */}
+          {/* Enhanced Glass Blur Overlay */}
           <div
-            className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300"
             onClick={closeModal}
           />
 
-          <div className="relative bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 max-w-sm w-full">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-black text-indigo-950 tracking-tight">
-                Confirm Deletion
-              </h3>
+          <div className="relative bg-white rounded-[2rem] p-8 shadow-2xl border border-slate-200/60 max-w-sm w-full animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
+            <div className="flex items-center justify-between mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500 shadow-sm border border-rose-100/50">
+                <Trash2 size={24} />
+              </div>
               <button
                 onClick={closeModal}
                 disabled={isPending}
-                className="text-slate-400 hover:text-slate-600 disabled:opacity-50 p-1"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 transition-all disabled:opacity-50"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <p className="text-sm text-slate-600 mb-6 leading-relaxed">
+            <h3 className="text-xl font-black text-indigo-950 tracking-tight mb-2">
+              Confirm Deletion
+            </h3>
+
+            <p className="text-[13px] text-slate-500 mb-8 leading-relaxed font-medium">
               Are you sure you want to delete this template? This action is
               permanent and cannot be undone.
             </p>
 
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex flex-col sm:flex-row items-center gap-3">
               <button
                 onClick={closeModal}
                 disabled={isPending}
-                className="px-4 py-2 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50 border border-slate-200 transition-colors disabled:opacity-50"
+                className="w-full sm:flex-1 h-11 rounded-2xl font-black text-xs uppercase tracking-widest text-slate-500 hover:bg-slate-50 border border-slate-200 transition-all disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={isPending}
-                className="px-4 py-2 rounded-xl font-bold text-sm text-white bg-rose-500 hover:bg-rose-600 transition-colors disabled:opacity-50 shadow-sm flex items-center gap-2"
+                className="w-full sm:flex-1 h-11 rounded-2xl font-black text-xs uppercase tracking-widest text-white bg-rose-500 hover:bg-rose-600 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg shadow-rose-200 flex items-center justify-center gap-2"
               >
-                {isPending && <Loader2 size={14} className="animate-spin" />}
-                {isPending ? "Deleting..." : "Delete"}
+                {isPending ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  "Delete Now"
+                )}
               </button>
             </div>
           </div>

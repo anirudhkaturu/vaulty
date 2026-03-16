@@ -20,7 +20,7 @@ export function AddTemplateForm() {
       const newTemplate = await createTemplateAction(name);
       setIsOpen(false);
       router.push(`/dashboard/templates/${newTemplate.id}`);
-    } catch (error) {
+    } catch {
       alert("Failed to create template");
     } finally {
       setPending(false);

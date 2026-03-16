@@ -1,10 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { db } from "@/lib/db";
-import { request_templates, template_items } from "@/lib/db/schema";
-import { eq, desc, count } from "drizzle-orm";
+import { request_templates } from "@/lib/db/schema";
+import { eq, desc } from "drizzle-orm";
 import { 
   FileStack, 
-  Plus, 
   Search, 
   ArrowRight,
   MoreVertical,

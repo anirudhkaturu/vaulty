@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { clients, requests } from "@/lib/db/schema";
+import { clients, requests, request_templates } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { 
   ArrowLeft, 
@@ -10,11 +10,11 @@ import {
   Phone, 
   Calendar, 
   FileText, 
-  Plus,
-  Clock,
-  ExternalLink
+  Clock
 } from "lucide-react";
-import { ClientRowActions } from "../ClientRowActions";
+import { NewRequestButton } from "./NewRequestButton";
+import { RequestRowActions } from "./RequestRowActions";
+import { DeleteClientButton } from "./DeleteClientButton";
 
 export default async function ClientDetailPage({
   params,
@@ -40,6 +40,12 @@ export default async function ClientDetailPage({
   if (!client) {
     notFound();
   }
+
+  // Fetch templates for the user
+  const templates = await db.query.request_templates.findMany({
+    where: eq(request_templates.profileId, user.id),
+    orderBy: [desc(request_templates.createdAt)],
+  });
 
   // Fetch requests for this client
   const clientRequests = await db.query.requests.findMany({
@@ -69,16 +75,13 @@ export default async function ClientDetailPage({
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <NewRequestButton clientId={id} templates={templates} />
+          
           <button className="h-9 px-4 bg-white border border-slate-200 rounded-xl font-bold text-[11px] text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-xs uppercase tracking-wider">
             Edit Details
           </button>
-          <button className="h-9 px-4 bg-indigo-600 text-white rounded-xl font-bold text-[11px] hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm uppercase tracking-wider">
-            <Plus size={14} strokeWidth={3} />
-            New Request
-          </button>
-          <div className="ml-1 pl-1 border-l border-slate-200">
-            <ClientRowActions clientId={id} />
-          </div>
+
+          <DeleteClientButton clientId={id} />
         </div>
       </header>
 
@@ -131,7 +134,7 @@ export default async function ClientDetailPage({
 
         {/* Right Column: Requests & Timeline */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white border border-slate-200/60 rounded-3xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-slate-200/60 rounded-3xl shadow-sm overflow-visible">
             <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
               <h2 className="text-xs font-black text-indigo-950 uppercase tracking-widest">Document Requests</h2>
               <span className="text-[9px] font-black text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md uppercase">
@@ -145,9 +148,8 @@ export default async function ClientDetailPage({
                   <FileText size={20} className="text-slate-200" />
                 </div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No active requests.</p>
-                <button className="mt-4 text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-[0.2em]">
-                  Create Request
-                </button>
+                
+                <NewRequestButton clientId={id} templates={templates} variant="ghost" />
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
@@ -175,10 +177,11 @@ export default async function ClientDetailPage({
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button className="h-8 px-3 rounded-lg bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center text-[10px] font-black uppercase tracking-widest shadow-xs">
-                        Details
-                        <ExternalLink size={10} className="ml-1.5" />
-                      </button>
+                      <RequestRowActions 
+                        requestId={request.id} 
+                        clientId={id} 
+                        templateId={request.templateId} 
+                      />
                     </div>
                   </div>
                 ))}

@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { db } from "@/lib/db";
-import { clients } from "@/lib/db/schema";
+import { clients, request_templates } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { Search, Users} from "lucide-react";
 import { AddClientForm } from "./AddClientForm";
@@ -16,6 +16,11 @@ export default async function ClientsPage() {
   const allClients = await db.query.clients.findMany({
     where: eq(clients.profileId, user.id),
     orderBy: [desc(clients.createdAt)],
+  });
+
+  const templates = await db.query.request_templates.findMany({
+    where: eq(request_templates.profileId, user.id),
+    orderBy: [desc(request_templates.createdAt)],
   });
 
   return (
@@ -96,7 +101,7 @@ export default async function ClientsPage() {
                   </div>
                 </Link>
                 
-                <ClientRowActions clientId={client.id} />
+                <ClientRowActions clientId={client.id} templates={templates} />
               </div>
             ))}
           </div>
