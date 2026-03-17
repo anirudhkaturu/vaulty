@@ -1,5 +1,6 @@
-import { FileText, Clock } from "lucide-react";
+import { FileText, Clock, ChevronRight } from "lucide-react";
 import { RequestRowActions } from "./RequestRowActions";
+import Link from "next/link";
 
 interface ClientRequestItemProps {
   request: {
@@ -14,12 +15,15 @@ interface ClientRequestItemProps {
 export function ClientRequestItem({ request, clientId }: ClientRequestItemProps) {
   return (
     <div className="p-5 hover:bg-slate-50/50 transition-colors flex items-center justify-between group">
-      <div className="flex items-center gap-4">
+      <Link 
+        href={`/dashboard/clients/${clientId}/requests/${request.id}`}
+        className="flex-1 flex items-center gap-4"
+      >
         <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-xs">
           <FileText size={18} />
         </div>
         <div>
-          <h4 className="font-bold text-sm text-indigo-950 leading-tight mb-1">
+          <h4 className="font-bold text-sm text-indigo-950 leading-tight mb-1 group-hover:text-indigo-600 transition-colors">
             Request #{request.id.slice(0, 8).toUpperCase()}
           </h4>
           <div className="flex items-center gap-3">
@@ -34,13 +38,19 @@ export function ClientRequestItem({ request, clientId }: ClientRequestItemProps)
             </span>
           </div>
         </div>
-      </div>
-      <div className="flex items-center gap-2">
+      </Link>
+      <div className="flex items-center gap-4">
         <RequestRowActions 
           requestId={request.id} 
           clientId={clientId} 
           templateId={request.templateId} 
         />
+        <Link 
+          href={`/dashboard/clients/${clientId}/requests/${request.id}`}
+          className="text-slate-300 group-hover:text-indigo-400 transition-colors"
+        >
+          <ChevronRight size={18} />
+        </Link>
       </div>
     </div>
   );
