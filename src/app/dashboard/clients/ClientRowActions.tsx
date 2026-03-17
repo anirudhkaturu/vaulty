@@ -43,6 +43,7 @@ export function ClientRowActions({
     setIsDeleting(true);
     try {
       await deleteClientAction(clientId);
+      setIsOpen(false);
     } catch {
       alert("Failed to delete client");
       setIsDeleting(false);

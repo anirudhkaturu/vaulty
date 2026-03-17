@@ -36,7 +36,7 @@ export default async function TemplatesPage() {
             <span>Workflow Automation</span>
           </div>
           <h1 className="text-3xl font-black text-indigo-950 tracking-tight leading-none">
-            Request Templates
+            Request <span className="text-indigo-600 font-serif italic font-normal">Templates</span>
           </h1>
         </div>
         <AddTemplateForm />

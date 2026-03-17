@@ -5,7 +5,6 @@ import { db } from "@/lib/db";
 import { clients, requests, request_documents, template_items } from "@/lib/db/schema";
 import { revalidatePath } from "next/cache";
 import { eq, and } from "drizzle-orm";
-import { redirect } from "next/navigation";
 import crypto from "crypto";
 
 export async function createClientAction(formData: FormData) {
@@ -54,7 +53,6 @@ export async function deleteClientAction(clientId: string) {
 
   revalidatePath("/dashboard/clients");
   revalidatePath("/dashboard");
-  redirect("/dashboard/clients");
 }
 
 export async function createRequestAction(clientId: string, templateId: string) {

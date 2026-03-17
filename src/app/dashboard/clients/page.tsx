@@ -33,7 +33,7 @@ export default async function ClientsPage() {
             <span>Directory</span>
           </div>
           <h1 className="text-3xl font-black text-indigo-950 tracking-tight leading-none">
-            Clients
+            Your <span className="text-indigo-600 font-serif italic font-normal">Clients.</span>
           </h1>
         </div>
         <AddClientForm />

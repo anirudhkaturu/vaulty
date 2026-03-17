@@ -3,21 +3,22 @@
 import { Trash2, Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { deleteClientAction } from "../actions";
+import { useRouter } from "next/navigation";
 
 export function DeleteClientButton({ clientId }: { clientId: string }) {
   const [isPending, setIsPending] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
   async function handleDelete() {
     setIsPending(true);
     try {
       await deleteClientAction(clientId);
       setShowModal(false);
+      router.push("/dashboard/clients");
     } catch (err) {
       console.error("Error deleting client:", err);
       alert("Failed to delete client");
-      setShowModal(false);
-    } finally {
       setIsPending(false);
     }
   }
@@ -54,7 +55,7 @@ export function DeleteClientButton({ clientId }: { clientId: string }) {
             onClick={closeModal}
           />
 
-          <div className="relative bg-white rounded-[2rem] p-8 shadow-2xl border border-slate-200/60 max-w-sm w-full animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
+          <div className="relative bg-white rounded-4xl p-8 shadow-2xl border border-slate-200/60 max-w-sm w-full animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
             <div className="flex items-center justify-between mb-6">
               <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500 shadow-sm border border-rose-100/50">
                 <Trash2 size={24} />
