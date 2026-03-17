@@ -50,6 +50,13 @@
       "when": 1773581031109,
       "tag": "0006_mysterious_tag",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1773746779957,
+      "tag": "0007_stale_firebird",
+      "breakpoints": true
     }
   ]
 }

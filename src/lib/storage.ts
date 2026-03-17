@@ -1,11 +1,26 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { r2Client, R2_BUCKET_NAME } from "@/lib/r2";
-import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export type StorageProvider = "supabase" | "r2";
 
 const PROVIDER: StorageProvider = (process.env.STORAGE_PROVIDER as StorageProvider) || "supabase";
+
+// Dedicated admin client for storage operations on the server
+// This avoids RLS issues when generating signed URLs
+const getAdminClient = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const adminKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!url || !adminKey) {
+    // Fallback to anonymous client if admin key is missing (for local dev)
+    console.warn("Missing SUPABASE_SERVICE_ROLE_KEY. Falling back to anonymous client.");
+    return createSupabaseClient(url || "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "");
+  }
+  
+  return createSupabaseClient(url, adminKey);
+};
 
 export async function getUploadUrl(key: string, contentType: string) {
   if (PROVIDER === "r2" && process.env.R2_ACCESS_KEY_ID) {
@@ -18,8 +33,8 @@ export async function getUploadUrl(key: string, contentType: string) {
     return url;
   }
 
-  // Fallback to Supabase
-  const supabase = await createClient();
+  const supabase = getAdminClient();
+  // Using the admin client here ensures we can ALWAYS generate the link
   const { data, error } = await supabase.storage
     .from("documents")
     .createSignedUploadUrl(key);
@@ -40,8 +55,7 @@ export async function getDownloadUrl(key: string) {
     return await getSignedUrl(r2Client, command, { expiresIn: 3600 });
   }
 
-  // Fallback to Supabase
-  const supabase = await createClient();
+  const supabase = getAdminClient();
   const { data, error } = await supabase.storage
     .from("documents")
     .createSignedUrl(key, 3600);
@@ -51,4 +65,25 @@ export async function getDownloadUrl(key: string) {
     throw error;
   }
   return data.signedUrl;
+}
+
+export async function deleteFile(key: string) {
+  if (PROVIDER === "r2" && process.env.R2_ACCESS_KEY_ID) {
+    const command = new DeleteObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: key,
+    });
+    await r2Client.send(command);
+    return;
+  }
+
+  const supabase = getAdminClient();
+  const { error } = await supabase.storage
+    .from("documents")
+    .remove([key]);
+
+  if (error) {
+    console.error("Supabase Storage Error (Delete):", error);
+    throw error;
+  }
 }

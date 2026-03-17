@@ -110,6 +110,9 @@ export const request_documents = pgTable("request_documents", {
   name: text("name").notNull(),
   required: boolean("required").default(true),
   uploaded: boolean("uploaded").default(false),
+  reviewStatus: text("review_status").default("pending"),
+  rejectionReason: text("rejection_reason"),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

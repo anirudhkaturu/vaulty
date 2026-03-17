@@ -16,6 +16,8 @@ interface Document {
   name: string;
   required: boolean | null;
   uploaded: boolean | null;
+  reviewStatus?: string | null;
+  rejectionReason?: string | null;
 }
 
 interface RequestData {
@@ -45,6 +47,33 @@ export function UploadPortal({
       d.id === docId ? { ...d, uploaded: true } : d
     ));
   };
+
+  if (request.status === "completed") {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-md w-full bg-white rounded-4xl p-12 border border-slate-200/60 shadow-2xl animate-in zoom-in-95 duration-500">
+          <div className="w-20 h-20 bg-emerald-500 text-white rounded-3xl flex items-center justify-center shadow-xl shadow-emerald-100 mx-auto mb-8">
+            <CheckCircle2 size={40} />
+          </div>
+          <h2 className="text-3xl font-black text-indigo-950 tracking-tighter mb-4">
+            Request Finalized
+          </h2>
+          <p className="text-slate-500 font-medium leading-relaxed mb-8">
+            All your documents have been reviewed and approved. This request is now complete and secured in our vault.
+          </p>
+          <div className="pt-8 border-t border-slate-100">
+            <div className="flex items-center justify-center gap-2 opacity-40 grayscale mb-2">
+              <ShieldCheck size={16} />
+              <span className="text-[10px] font-black uppercase tracking-widest">Securely Stored</span>
+            </div>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Powered by Vaulty Inc.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-indigo-100 selection:text-indigo-900">
