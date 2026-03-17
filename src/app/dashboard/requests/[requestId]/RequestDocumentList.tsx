@@ -1,4 +1,8 @@
-import { FileText, CheckCircle2, Download, ExternalLink, AlertCircle } from "lucide-react";
+"use client";
+
+import { FileText, CheckCircle2, Download, ExternalLink, AlertCircle, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { getPresignedDownloadUrl } from "./actions";
 
 interface Document {
   id: string;
@@ -6,6 +10,7 @@ interface Document {
   required: boolean | null;
   uploaded: boolean | null;
   file?: {
+    id: string;
     fileName: string;
     filePath: string;
     fileSize: number | null;
@@ -17,6 +22,46 @@ interface RequestDocumentListProps {
 }
 
 export function RequestDocumentList({ documents }: RequestDocumentListProps) {
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownload = async (docFileId: string | undefined, fileName: string) => {
+    if (!docFileId) return;
+    
+    setDownloadingId(docFileId);
+    try {
+      const url = await getPresignedDownloadUrl(docFileId);
+      
+      // Open in new tab or trigger direct download
+      const link = window.document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      link.setAttribute('target', '_blank');
+      window.document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to download file");
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  const handlePreview = async (docFileId: string | undefined) => {
+    if (!docFileId) return;
+    
+    setDownloadingId(docFileId);
+    try {
+      const url = await getPresignedDownloadUrl(docFileId);
+      window.open(url, '_blank');
+    } catch (err) {
+      console.error(err);
+      alert("Failed to open preview");
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   return (
     <div className="bg-white border border-slate-200/60 rounded-3xl overflow-hidden shadow-sm">
       <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
@@ -51,7 +96,7 @@ export function RequestDocumentList({ documents }: RequestDocumentListProps) {
                     {doc.uploaded ? "Uploaded" : "Pending Action"}
                   </span>
                   {doc.uploaded && doc.file && (
-                    <span className="text-[10px] text-slate-300 font-medium">
+                    <span className="text-[10px] text-slate-300 font-medium truncate max-w-[150px] sm:max-w-xs">
                       • {doc.file.fileName}
                     </span>
                   )}
@@ -60,13 +105,21 @@ export function RequestDocumentList({ documents }: RequestDocumentListProps) {
             </div>
 
             <div className="flex items-center gap-2 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-              {doc.uploaded ? (
+              {doc.uploaded && doc.file ? (
                 <>
-                  <button className="h-8 px-3 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-xs uppercase tracking-wider">
-                    <Download size={12} />
+                  <button 
+                    onClick={() => handleDownload(doc.file?.id, doc.file?.fileName || 'download')}
+                    disabled={downloadingId === doc.file.id}
+                    className="h-8 px-3 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-xs uppercase tracking-wider disabled:opacity-50"
+                  >
+                    {downloadingId === doc.file.id ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
                     Download
                   </button>
-                  <button className="h-8 w-8 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-all shadow-xs">
+                  <button 
+                    onClick={() => handlePreview(doc.file?.id)}
+                    disabled={downloadingId === doc.file.id}
+                    className="h-8 w-8 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-all shadow-xs disabled:opacity-50"
+                  >
                     <ExternalLink size={12} />
                   </button>
                 </>

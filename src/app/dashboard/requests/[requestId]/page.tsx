@@ -48,6 +48,7 @@ export default async function RequestDetailPage({
         clientId={request.clientId} 
         requestId={requestId} 
         status={request.status} 
+        uploadToken={request.uploadToken}
       />
 
       <RequestProgress 

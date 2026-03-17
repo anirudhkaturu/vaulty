@@ -1,13 +1,19 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowLeft, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Clock, CheckCircle2, AlertCircle, Share2, Check } from "lucide-react";
+import { useState } from "react";
 
 interface RequestDetailHeaderProps {
   clientId: string;
   requestId: string;
   status: string | null;
+  uploadToken: string;
 }
 
-export function RequestDetailHeader({ clientId, requestId, status }: RequestDetailHeaderProps) {
+export function RequestDetailHeader({ clientId, requestId, status, uploadToken }: RequestDetailHeaderProps) {
+  const [copied, setCopied] = useState(false);
+
   const getStatusDisplay = () => {
     switch (status) {
       case "completed":
@@ -35,6 +41,14 @@ export function RequestDetailHeader({ clientId, requestId, status }: RequestDeta
   };
 
   const statusStyle = getStatusDisplay();
+
+  const handleCopyLink = () => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${origin}/p/${uploadToken}`;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -65,8 +79,25 @@ export function RequestDetailHeader({ clientId, requestId, status }: RequestDeta
         <button className="h-9 px-4 bg-white border border-slate-200 rounded-xl font-bold text-[11px] text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-xs uppercase tracking-wider">
           Resend Notification
         </button>
-        <button className="h-9 px-4 bg-indigo-600 text-white rounded-xl font-bold text-[11px] hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm uppercase tracking-wider">
-          Share Link
+        <button 
+          onClick={handleCopyLink}
+          className={`h-9 px-4 rounded-xl font-bold text-[11px] transition-all flex items-center justify-center gap-2 shadow-sm uppercase tracking-wider ${
+            copied 
+              ? "bg-emerald-500 text-white" 
+              : "bg-indigo-600 text-white hover:bg-indigo-700"
+          }`}
+        >
+          {copied ? (
+            <>
+              <Check size={14} />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Share2 size={14} />
+              Share Link
+            </>
+          )}
         </button>
       </div>
     </header>
