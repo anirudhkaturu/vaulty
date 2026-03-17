@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
   Sparkles,
+  FileSearch,
 } from "lucide-react";
 
 export function DashboardSidebar() {
@@ -17,6 +18,7 @@ export function DashboardSidebar() {
   const navItems = [
     { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
     { label: "Clients", href: "/dashboard/clients", icon: Users },
+    { label: "Requests", href: "/dashboard/requests", icon: FileSearch },
     { label: "Templates", href: "/dashboard/templates", icon: FileStack },
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];

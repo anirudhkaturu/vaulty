@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requests } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { RequestDetailHeader } from "./RequestDetailHeader";
 import { RequestProgress } from "./RequestProgress";
 import { RequestDocumentList } from "./RequestDocumentList";
@@ -11,9 +11,9 @@ import { RequestInfoSidebar } from "./RequestInfoSidebar";
 export default async function RequestDetailPage({
   params,
 }: {
-  params: { id: string; requestId: string };
+  params: { requestId: string };
 }) {
-  const { id, requestId } = await params;
+  const { requestId } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -23,10 +23,7 @@ export default async function RequestDetailPage({
 
   // Fetch request details with relations
   const request = await db.query.requests.findFirst({
-    where: and(
-      eq(requests.id, requestId),
-      eq(requests.clientId, id)
-    ),
+    where: eq(requests.id, requestId),
     with: {
       client: true,
       template: true,
@@ -48,7 +45,7 @@ export default async function RequestDetailPage({
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <RequestDetailHeader 
-        clientId={id} 
+        clientId={request.clientId} 
         requestId={requestId} 
         status={request.status} 
       />

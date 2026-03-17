@@ -16,7 +16,7 @@ export function ClientRequestItem({ request, clientId }: ClientRequestItemProps)
   return (
     <div className="p-5 hover:bg-slate-50/50 transition-colors flex items-center justify-between group">
       <Link 
-        href={`/dashboard/clients/${clientId}/requests/${request.id}`}
+        href={`/dashboard/requests/${request.id}`}
         className="flex-1 flex items-center gap-4"
       >
         <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-xs">
@@ -46,7 +46,7 @@ export function ClientRequestItem({ request, clientId }: ClientRequestItemProps)
           templateId={request.templateId} 
         />
         <Link 
-          href={`/dashboard/clients/${clientId}/requests/${request.id}`}
+          href={`/dashboard/requests/${request.id}`}
           className="text-slate-300 group-hover:text-indigo-400 transition-colors"
         >
           <ChevronRight size={18} />

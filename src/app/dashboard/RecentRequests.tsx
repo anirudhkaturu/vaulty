@@ -45,7 +45,7 @@ export function RecentRequests({ requests }: RecentRequestsProps) {
             {requests.map((request) => (
               <Link 
                 key={request.id} 
-                href={`/dashboard/clients/${request.clientId}`}
+                href={`/dashboard/requests/${request.id}`}
                 className="p-6 hover:bg-slate-50/50 transition-colors flex items-center justify-between group"
               >
                 <div className="flex items-center gap-4">
