@@ -5,7 +5,7 @@ import { BentoGrid } from "./bento-grid";
 export const Features = () => (
   <section
     id="solution"
-    className="px-6 py-16 md:py-24 max-w-7xl mx-auto overflow-x-clip"
+    className="px-6 py-16 md:py-24 max-w-7xl mx-auto overflow-x-clip scroll-mt-20"
   >
     {/* Header Section */}
     <motion.div

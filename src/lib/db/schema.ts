@@ -7,6 +7,11 @@ export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey().notNull(), // This will link to Supabase Auth ID
   name: text("name"),
   companyName: text("company_name"),
+  bio: text("bio"),
+  welcomeMessage: text("welcome_message"),
+  defaultExpiryDays: bigint("default_expiry_days", { mode: "number" }).default(14).notNull(),
+  notifyOnUpload: boolean("notify_on_upload").default(true).notNull(),
+  notifyOnCompletion: boolean("notify_on_completion").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

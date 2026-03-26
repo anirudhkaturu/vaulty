@@ -7,7 +7,8 @@ import {
   Clock, 
   ShieldCheck, 
   Lock,
-  ChevronRight
+  ChevronRight,
+  MessageSquare
 } from "lucide-react";
 import { UploadItem } from "./UploadItem";
 
@@ -20,12 +21,20 @@ interface Document {
   rejectionReason?: string | null;
 }
 
+interface Profile {
+  name: string | null;
+  companyName: string | null;
+  bio: string | null;
+  welcomeMessage: string | null;
+}
+
 interface RequestData {
   id: string;
   clientId: string;
   status: string | null;
   client: {
     name: string;
+    profile: Profile;
   };
   documents: Document[];
 }
@@ -48,6 +57,9 @@ export function UploadPortal({
     ));
   };
 
+  const businessName = request.client.profile.companyName || request.client.profile.name || "Vaulty Business";
+  const welcomeMessage = request.client.profile.welcomeMessage || "Please upload the following documents to complete your request. All files are encrypted and stored securely.";
+
   if (request.status === "completed") {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
@@ -59,7 +71,7 @@ export function UploadPortal({
             Request Finalized
           </h2>
           <p className="text-slate-500 font-medium leading-relaxed mb-8">
-            All your documents have been reviewed and approved. This request is now complete and secured in our vault.
+            All your documents have been reviewed and approved by <span className="font-bold text-indigo-600">{businessName}</span>. This request is now complete and secured in our vault.
           </p>
           <div className="pt-8 border-t border-slate-100">
             <div className="flex items-center justify-center gap-2 opacity-40 grayscale mb-2">
@@ -93,7 +105,7 @@ export function UploadPortal({
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col items-end">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Requested by</span>
-              <span className="text-sm font-bold text-indigo-950">Vaulty Business</span>
+              <span className="text-sm font-bold text-indigo-950">{businessName}</span>
             </div>
             <div className="w-px h-8 bg-slate-200 mx-2 hidden sm:block" />
             <div className="flex flex-col items-end">
@@ -117,9 +129,14 @@ export function UploadPortal({
               <h2 className="text-4xl sm:text-5xl font-black text-indigo-950 tracking-tighter leading-[1.1]">
                 {isComplete ? "All documents uploaded" : "Complete your document request"}
               </h2>
-              <p className="text-base text-slate-500 font-medium leading-relaxed max-w-xl">
-                Please upload the following documents to complete your request. All files are encrypted and stored securely.
-              </p>
+              <div className="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-xs relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform duration-500">
+                  <MessageSquare size={48} />
+                </div>
+                <p className="text-sm md:text-base text-slate-600 font-medium leading-relaxed relative z-10 italic">
+                  &quot;{welcomeMessage}&quot;
+                </p>
+              </div>
             </div>
 
             <div className="grid gap-4">
@@ -188,10 +205,15 @@ export function UploadPortal({
 
             <div className="bg-indigo-950 rounded-4xl p-8 text-white shadow-xl shadow-indigo-100 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-white/10 transition-all duration-500" />
-              <h4 className="text-sm font-black uppercase tracking-widest mb-3 opacity-60">Need help?</h4>
-              <p className="text-xs font-medium text-indigo-200/80 leading-relaxed mb-6">
-                If you encounter any issues or have questions about this request, please contact your business representative.
-              </p>
+              <h4 className="text-sm font-black uppercase tracking-widest mb-3 opacity-60">Representative</h4>
+              <div className="mb-6">
+                <p className="text-lg font-bold text-white mb-1">{request.client.profile.name}</p>
+                {request.client.profile.bio && (
+                  <p className="text-xs font-medium text-indigo-200/80 leading-relaxed italic">
+                    {request.client.profile.bio}
+                  </p>
+                )}
+              </div>
               <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white hover:text-indigo-200 transition-colors">
                 Contact Support <ChevronRight size={14} />
               </button>

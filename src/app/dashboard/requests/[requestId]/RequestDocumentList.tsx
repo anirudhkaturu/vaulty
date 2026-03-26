@@ -121,7 +121,7 @@ export function RequestDocumentList({ documents }: RequestDocumentListProps) {
                       {doc.uploaded ? "Uploaded" : "Pending Client Upload"}
                     </span>
                     {doc.uploaded && doc.file && (
-                      <span className="text-[10px] text-slate-300 font-medium truncate max-w-[150px] sm:max-w-xs">
+                      <span className="text-[10px] text-slate-300 font-medium truncate max-w-37.5 sm:max-w-xs">
                         • {doc.file.fileName}
                       </span>
                     )}
@@ -168,12 +168,7 @@ export function RequestDocumentList({ documents }: RequestDocumentListProps) {
                       )}
                     </div>
                   </>
-                ) : (
-                  <button className="h-8 px-3 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg text-[10px] font-bold hover:bg-indigo-100 transition-all flex items-center gap-1.5 uppercase tracking-wider">
-                    <AlertCircle size={12} />
-                    Remind Client
-                  </button>
-                )}
+                ) : null}
               </div>
             </div>
 

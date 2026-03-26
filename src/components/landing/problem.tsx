@@ -29,7 +29,7 @@ const itemVariants: Variants = {
 export const ProblemSection = () => (
   <section
     id="problem"
-    className="px-6 py-20 md:py-32 bg-white border-y border-slate-200/60 scroll-mt-14 overflow-x-clip"
+    className="px-6 py-20 md:py-32 bg-white border-y border-slate-200/60 scroll-mt-20 overflow-x-clip"
   >
     <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
       {/* --- LEFT: TEXT CONTENT --- */}

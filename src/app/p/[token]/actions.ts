@@ -10,7 +10,11 @@ export async function getRequestByToken(token: string) {
   const request = await db.query.requests.findFirst({
     where: eq(requests.uploadToken, token),
     with: {
-      client: true,
+      client: {
+        with: {
+          profile: true,
+        },
+      },
       documents: true,
     },
   });

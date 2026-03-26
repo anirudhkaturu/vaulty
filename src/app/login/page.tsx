@@ -95,10 +95,10 @@ export default function LoginPage() {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-indigo-950">
-                      Automated reminders
+                      One-Click Approvals
                     </h4>
                     <p className="text-xs text-slate-500 mt-0.5 leading-snug">
-                      We handle follow-ups automatically.
+                      Review faster with clear feedback loops.
                     </p>
                   </div>
                 </div>

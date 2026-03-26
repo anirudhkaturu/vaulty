@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import {
-  Zap,
   FileText,
   LayoutGrid,
   ShieldCheck,
@@ -68,21 +67,21 @@ export const BentoGrid = () => {
         </div>
       </motion.div>
 
-      {/* 2. AUTO REMINDERS */}
+      {/* 2. ONE-CLICK APPROVALS */}
       <motion.div
         whileHover={{ y: -5 }}
         className="md:col-span-4 min-h-75 bg-white border border-slate-200 rounded-4xl md:rounded-[2.5rem] p-8 flex flex-col justify-between group shadow-sm hover:shadow-xl transition-all text-left"
       >
-        <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center border border-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
-          <Zap size={24} />
+        <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center border border-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+          <CheckCircle2 size={24} />
         </div>
         <div>
           <h3 className="text-2xl font-bold text-indigo-950 mb-3 leading-tight tracking-tight">
-            Auto Reminders
+            One-Click Approvals
           </h3>
           <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
-            &ldquo;Follow up until the job is done.&rdquo; Vaulty pings clients
-            so you don&rsquo;t have to.
+            &ldquo;Review faster, finish sooner.&rdquo; Instantly approve or reject
+            documents with clear feedback loops.
           </p>
         </div>
       </motion.div>

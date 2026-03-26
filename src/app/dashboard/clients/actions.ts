@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { db } from "@/lib/db";
-import { clients, requests, request_documents, template_items } from "@/lib/db/schema";
+import { clients, requests, request_documents, template_items, profiles } from "@/lib/db/schema";
 import { revalidatePath } from "next/cache";
 import { eq, and } from "drizzle-orm";
 import crypto from "crypto";
@@ -63,13 +63,18 @@ export async function createRequestAction(clientId: string, templateId: string) 
     throw new Error("Unauthorized");
   }
 
-  // 1. Verify client belongs to user
-  const client = await db.query.clients.findFirst({
-    where: and(
-      eq(clients.id, clientId),
-      eq(clients.profileId, user.id)
-    ),
-  });
+  // 1. Verify client belongs to user and get profile settings
+  const [client, profile] = await Promise.all([
+    db.query.clients.findFirst({
+      where: and(
+        eq(clients.id, clientId),
+        eq(clients.profileId, user.id)
+      ),
+    }),
+    db.query.profiles.findFirst({
+      where: eq(profiles.id, user.id),
+    })
+  ]);
 
   if (!client) {
     throw new Error("Client not found");
@@ -77,11 +82,18 @@ export async function createRequestAction(clientId: string, templateId: string) 
 
   // 2. Create the request
   const uploadToken = crypto.randomUUID().replace(/-/g, "").substring(0, 12);
+  
+  // Calculate due date based on profile setting or default to 14 days
+  const expiryDays = profile?.defaultExpiryDays || 14;
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + expiryDays);
+
   const [newRequest] = await db.insert(requests).values({
     clientId,
     templateId,
     uploadToken,
     status: "pending",
+    dueDate,
   }).returning();
 
   // 3. Get items from template

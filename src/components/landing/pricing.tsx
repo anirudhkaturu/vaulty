@@ -6,7 +6,6 @@ import Link from "next/link";
 const features = [
   "Up to 25 active document requests",
   "Standard client portal (Vaulty branded)",
-  "Automated weekly reminders",
   "AES-256 Cloud Storage",
   "Email Support (24h turnaround)",
   "PDF Exporting",
@@ -15,7 +14,7 @@ const features = [
 export const Pricing = () => (
   <section
     id="pricing"
-    className="py-20 md:py-32 px-6 relative overflow-hidden bg-[#fafafa]"
+    className="py-20 md:py-32 px-6 relative overflow-hidden bg-[#fafafa] scroll-mt-20"
   >
     {/* Subtle Background Pattern */}
     <div
