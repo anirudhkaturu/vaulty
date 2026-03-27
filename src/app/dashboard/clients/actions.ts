@@ -6,6 +6,8 @@ import { clients, requests, request_documents, template_items, profiles } from "
 import { revalidatePath } from "next/cache";
 import { eq, and } from "drizzle-orm";
 import crypto from "crypto";
+import { resend } from "@/lib/email";
+import { ClientRequestEmail } from "@/lib/email-templates";
 
 export async function createClientAction(formData: FormData) {
   const supabase = await createClient();
@@ -63,7 +65,6 @@ export async function createRequestAction(clientId: string, templateId: string) 
     throw new Error("Unauthorized");
   }
 
-  // 1. Verify client belongs to user and get profile settings
   const [client, profile] = await Promise.all([
     db.query.clients.findFirst({
       where: and(
@@ -80,10 +81,7 @@ export async function createRequestAction(clientId: string, templateId: string) 
     throw new Error("Client not found");
   }
 
-  // 2. Create the request
   const uploadToken = crypto.randomUUID().replace(/-/g, "").substring(0, 12);
-  
-  // Calculate due date based on profile setting or default to 14 days
   const expiryDays = profile?.defaultExpiryDays || 14;
   const dueDate = new Date();
   dueDate.setDate(dueDate.getDate() + expiryDays);
@@ -96,12 +94,10 @@ export async function createRequestAction(clientId: string, templateId: string) 
     dueDate,
   }).returning();
 
-  // 3. Get items from template
   const items = await db.query.template_items.findMany({
     where: eq(template_items.templateId, templateId),
   });
 
-  // 4. Create request documents from template items
   if (items.length > 0) {
     await db.insert(request_documents).values(
       items.map(item => ({
@@ -112,9 +108,84 @@ export async function createRequestAction(clientId: string, templateId: string) 
     );
   }
 
+  if (client.email) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vaulty.vercel.app";
+    const uploadLink = `${appUrl}/p/${uploadToken}`;
+    const fromName = profile?.name ? `${profile.name} via Vaulty` : "Vaulty Notifications";
+
+    try {
+      await resend.emails.send({
+        from: `${fromName} <onboarding@resend.dev>`,
+        to: client.email,
+        replyTo: profile?.email || undefined,
+        subject: `Document Request from ${profile?.name || "Your Advisor"}`,
+        react: ClientRequestEmail({
+          professionalName: profile?.name || "Your Advisor",
+          professionalCompany: profile?.companyName,
+          clientName: client.name,
+          uploadLink,
+          welcomeMessage: profile?.welcomeMessage,
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to send initial email:", error);
+    }
+  }
+
   revalidatePath("/dashboard/clients");
   revalidatePath(`/dashboard/clients/${clientId}`);
   return newRequest;
+}
+
+export async function resendRequestNotificationAction(requestId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const request = await db.query.requests.findFirst({
+    where: eq(requests.id, requestId),
+    with: {
+      client: {
+        with: {
+          profile: true
+        }
+      }
+    }
+  });
+
+  if (!request || request.client.profileId !== user.id) {
+    throw new Error("Unauthorized or request not found");
+  }
+
+  const { client } = request;
+  const profile = client.profile;
+
+  if (!client.email) {
+    throw new Error("Client has no email address");
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vaulty.vercel.app";
+  const uploadLink = `${appUrl}/p/${request.uploadToken}`;
+  const fromName = profile?.name ? `${profile.name} via Vaulty` : "Vaulty Notifications";
+
+  await resend.emails.send({
+    from: `${fromName} <onboarding@resend.dev>`,
+    to: client.email,
+    replyTo: profile?.email || undefined,
+    subject: `Reminder: Document Request from ${profile?.name || "Your Advisor"}`,
+    react: ClientRequestEmail({
+      professionalName: profile?.name || "Your Advisor",
+      professionalCompany: profile?.companyName,
+      clientName: client.name,
+      uploadLink,
+      welcomeMessage: profile?.welcomeMessage,
+    }),
+  });
+
+  return { success: true };
 }
 
 export async function deleteRequestAction(requestId: string, clientId: string) {
@@ -125,7 +196,6 @@ export async function deleteRequestAction(requestId: string, clientId: string) {
     throw new Error("Unauthorized");
   }
 
-  // Verify the request belongs to a client owned by the user
   const request = await db.query.requests.findFirst({
     where: eq(requests.id, requestId),
     with: {

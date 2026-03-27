@@ -13,6 +13,23 @@ export default async function DashboardPage() {
 
   if (!user) return null;
 
+  // Sync profile email if needed
+  const existingProfile = await db.query.profiles.findFirst({
+    where: eq(profiles.id, user.id),
+  });
+
+  if (!existingProfile) {
+    await db.insert(profiles).values({
+      id: user.id,
+      email: user.email,
+      name: user.user_metadata?.full_name || user.email?.split("@")[0] || "User",
+    });
+  } else if (user.email && existingProfile.email !== user.email) {
+    await db.update(profiles)
+      .set({ email: user.email })
+      .where(eq(profiles.id, user.id));
+  }
+
   const [profile, clientCountResult, pendingRequestsResult, completedRequestsResult, userRecentRequests] = await Promise.all([
     db.query.profiles.findFirst({
       where: eq(profiles.id, user.id),

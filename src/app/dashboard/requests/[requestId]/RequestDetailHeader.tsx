@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Clock, CheckCircle2, AlertCircle, Share2, Check } from "lucide-react";
+import { ArrowLeft, Clock, CheckCircle2, AlertCircle, Share2, Check, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { resendRequestNotificationAction } from "@/app/dashboard/clients/actions";
 
 interface RequestDetailHeaderProps {
   clientId: string;
@@ -13,6 +14,8 @@ interface RequestDetailHeaderProps {
 
 export function RequestDetailHeader({ clientId, requestId, status, uploadToken }: RequestDetailHeaderProps) {
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
 
   const getStatusDisplay = () => {
     switch (status) {
@@ -50,6 +53,20 @@ export function RequestDetailHeader({ clientId, requestId, status, uploadToken }
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleResendNotification = async () => {
+    setSending(true);
+    try {
+      await resendRequestNotificationAction(requestId);
+      setSent(true);
+      setTimeout(() => setSent(false), 3000);
+    } catch (error) {
+      console.error("Failed to resend notification:", error);
+      alert("Failed to resend notification. Please ensure the client has an email address.");
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-center gap-4">
@@ -76,8 +93,17 @@ export function RequestDetailHeader({ clientId, requestId, status, uploadToken }
       </div>
       
       <div className="flex items-center gap-2">
-        <button className="h-9 px-4 bg-white border border-slate-200 rounded-xl font-bold text-[11px] text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-xs uppercase tracking-wider">
-          Resend Notification
+        <button 
+          onClick={handleResendNotification}
+          disabled={sending || sent}
+          className="h-9 px-4 bg-white border border-slate-200 rounded-xl font-bold text-[11px] text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-xs uppercase tracking-wider disabled:opacity-50"
+        >
+          {sending ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : sent ? (
+            <Check size={14} className="text-emerald-500" />
+          ) : null}
+          {sent ? "Sent!" : "Resend Notification"}
         </button>
         <button 
           onClick={handleCopyLink}

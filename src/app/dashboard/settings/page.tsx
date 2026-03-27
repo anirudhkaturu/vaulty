@@ -35,6 +35,8 @@ export default async function SettingsPage() {
           bio: profile?.bio || "",
           welcomeMessage: profile?.welcomeMessage || "",
           defaultExpiryDays: profile?.defaultExpiryDays || 14,
+          notifyOnUpload: profile?.notifyOnUpload ?? true,
+          notifyOnCompletion: profile?.notifyOnCompletion ?? true,
         }} 
       />
     </div>

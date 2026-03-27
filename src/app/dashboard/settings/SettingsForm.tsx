@@ -11,7 +11,9 @@ import {
   Sparkles,
   Check,
   MessageSquare,
-  BadgeInfo
+  BadgeInfo,
+  BellRing,
+  Mail
 } from "lucide-react";
 import { updateProfileAction, type ProfileUpdateData } from "./actions";
 
@@ -22,6 +24,8 @@ interface SettingsFormProps {
     bio: string | null;
     welcomeMessage: string | null;
     defaultExpiryDays: number;
+    notifyOnUpload: boolean;
+    notifyOnCompletion: boolean;
   };
 }
 
@@ -32,6 +36,8 @@ export function SettingsForm({ initialData }: SettingsFormProps) {
     bio: initialData.bio || "",
     welcomeMessage: initialData.welcomeMessage || "",
     defaultExpiryDays: initialData.defaultExpiryDays,
+    notifyOnUpload: initialData.notifyOnUpload,
+    notifyOnCompletion: initialData.notifyOnCompletion,
   });
 
   const [loading, setLoading] = useState(false);
@@ -166,6 +172,56 @@ export function SettingsForm({ initialData }: SettingsFormProps) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* SECTION: NOTIFICATIONS */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 border-t border-slate-100 pt-12">
+          <div className="lg:col-span-1">
+            <h3 className="text-sm font-black text-indigo-950 uppercase tracking-widest mb-2">Email Notifications</h3>
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              Choose when you want to be alerted about client activity.
+            </p>
+          </div>
+          
+          <div className="lg:col-span-2 space-y-4">
+            <label className="flex items-start gap-4 p-5 bg-white border border-slate-200/60 rounded-3xl hover:border-indigo-200 transition-all cursor-pointer group">
+              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors shrink-0">
+                <Mail size={18} />
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-sm font-bold text-indigo-950">Document Uploaded</p>
+                <p className="text-xs text-slate-500">Receive an email as soon as a client uploads a document.</p>
+              </div>
+              <div className="relative inline-flex items-center cursor-pointer mt-2">
+                <input 
+                  type="checkbox" 
+                  checked={formData.notifyOnUpload}
+                  onChange={(e) => setFormData({ ...formData, notifyOnUpload: e.target.checked })}
+                  className="sr-only peer" 
+                />
+                <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+              </div>
+            </label>
+
+            <label className="flex items-start gap-4 p-5 bg-white border border-slate-200/60 rounded-3xl hover:border-indigo-200 transition-all cursor-pointer group">
+              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors shrink-0">
+                <BellRing size={18} />
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-sm font-bold text-indigo-950">Request Completed</p>
+                <p className="text-xs text-slate-500">Get notified when a client has provided all requested items.</p>
+              </div>
+              <div className="relative inline-flex items-center cursor-pointer mt-2">
+                <input 
+                  type="checkbox" 
+                  checked={formData.notifyOnCompletion}
+                  onChange={(e) => setFormData({ ...formData, notifyOnCompletion: e.target.checked })}
+                  className="sr-only peer" 
+                />
+                <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+              </div>
+            </label>
           </div>
         </div>
 

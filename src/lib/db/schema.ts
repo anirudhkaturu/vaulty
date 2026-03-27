@@ -6,6 +6,7 @@ export const requestStatusEnum = pgEnum("request_status", ["pending", "in_progre
 export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey().notNull(), // This will link to Supabase Auth ID
   name: text("name"),
+  email: text("email"),
   companyName: text("company_name"),
   bio: text("bio"),
   welcomeMessage: text("welcome_message"),

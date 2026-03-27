@@ -12,6 +12,8 @@ export type ProfileUpdateData = {
   bio: string | null;
   welcomeMessage: string | null;
   defaultExpiryDays: number;
+  notifyOnUpload: boolean;
+  notifyOnCompletion: boolean;
 };
 
 export async function updateProfileAction(formData: ProfileUpdateData) {
@@ -31,6 +33,8 @@ export async function updateProfileAction(formData: ProfileUpdateData) {
         bio: formData.bio || null,
         welcomeMessage: formData.welcomeMessage || null,
         defaultExpiryDays: formData.defaultExpiryDays,
+        notifyOnUpload: formData.notifyOnUpload,
+        notifyOnCompletion: formData.notifyOnCompletion,
       })
       .where(eq(profiles.id, user.id));
 
